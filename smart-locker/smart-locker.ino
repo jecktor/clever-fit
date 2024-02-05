@@ -42,6 +42,7 @@ FirebaseConfig config;
 /* Flags */
 
 bool unlocked = false;
+bool prevItemsCheck;
 
 /* Timers */
 
@@ -55,6 +56,52 @@ const unsigned long itemsInterval = 10000;
 
 String path = String("/lockers/entries/" + WiFi.macAddress());
 
+void streamCallback(FirebaseStream data) {
+  String streamPath = String(data.dataPath());
+
+  if (streamPath.equals("/open")) {
+    if (data.dataTypeEnum() != firebase_rtdb_data_type_boolean || !data.boolData())
+      return;
+
+    unlocked = true;
+
+  } else if (streamPath.equals("/tenant")) {
+    if (data.dataTypeEnum() != firebase_rtdb_data_type_string)
+      return;
+
+    lcd.setCursor(0, 1);
+
+    for (int i = 0; i < 16; ++i)
+      lcd.print(" ");
+
+    if (data.stringData().equals("null"))
+      return;
+
+    lcd.setCursor(0, 1);
+    lcd.print(data.stringData());
+
+  } else if (streamPath.equals("/number")) {
+    if (data.dataTypeEnum() != firebase_rtdb_data_type_integer)
+      return;
+
+    lcd.setCursor(0, 0);
+
+    for (int i = 0; i < 16; ++i)
+      lcd.print(" ");
+
+    lcd.setCursor(0, 0);
+    lcd.print('#');
+    lcd.print(data.intData());
+  }
+}
+
+void streamTimeoutCallback(bool timeout) {
+  if (timeout)
+    Serial.println("Stream timed out, resuming...\n");
+
+  if (!stream.httpConnected())
+    Serial_Printf("Error code: %d, reason: %s\n\n", stream.httpCode(), stream.errorReason().c_str());
+}
 
 void lockerSetup() {
   /* Locker number */
@@ -97,48 +144,6 @@ void lockerSetup() {
 
   lcd.setCursor(0, 1);
   lcd.print(tenant);
-}
-
-void streamCallback(FirebaseStream data) {
-  String streamPath = String(data.dataPath());
-
-  if (streamPath.equals("/open")) {
-    if (data.dataTypeEnum() != firebase_rtdb_data_type_boolean || !data.boolData())
-      return;
-
-    unlocked = true;
-
-  } else if (streamPath.equals("/tenant")) {
-    if (data.dataTypeEnum() != firebase_rtdb_data_type_string)
-      return;
-
-    lcd.setCursor(0, 1);
-
-    if (data.stringData().equals("null")) {
-      for (int i = 0; i < 16; ++i)
-        lcd.print(" ");
-
-      return;
-    }
-
-    lcd.print(data.stringData());
-
-  } else if (streamPath.equals("/number")) {
-    if (data.dataTypeEnum() != firebase_rtdb_data_type_integer)
-      return;
-
-    lcd.setCursor(0, 0);
-    lcd.print('#');
-    lcd.print(data.intData());
-  }
-}
-
-void streamTimeoutCallback(bool timeout) {
-  if (timeout)
-    Serial.println("Stream timed out, resuming...\n");
-
-  if (!stream.httpConnected())
-    Serial_Printf("Error code: %d, reason: %s\n\n", stream.httpCode(), stream.errorReason().c_str());
 }
 
 void setup() {
@@ -225,16 +230,25 @@ void loop() {
   // Check for the items delay
   if (millis() - itemsMillis >= itemsInterval) {
     itemsMillis = millis();
-    Serial.println("Check items");
+
+    bool hasItems = sonar.ping() < 3000;
+
+    if (hasItems != prevItemsCheck) {
+      prevItemsCheck = hasItems;
+
+      Firebase.RTDB.setBool(&fbdo, F(String(path + "/hasItems").c_str()), hasItems);
+    }
   }
 
   // Check for the lock delay
   if (millis() - lockMillis >= lockInterval) {
     lockMillis = millis();
 
-    Firebase.RTDB.setInt(&fbdo, F(String(path + "/open").c_str()), false);
+    if (unlocked) {
+      Firebase.RTDB.setInt(&fbdo, F(String(path + "/open").c_str()), false);
 
-    unlocked = false;
+      unlocked = false;
+    }
   }
 
   if (unlocked)
