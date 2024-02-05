@@ -80,24 +80,57 @@ void lockerSetup() {
     Firebase.RTDB.setInt(&fbdo, F(String(path + "/number").c_str()), number);
     Firebase.RTDB.setBool(&fbdo, F(String(path + "/hasItems").c_str()), false);
     Firebase.RTDB.setBool(&fbdo, F(String(path + "/open").c_str()), false);
+    Firebase.RTDB.setString(&fbdo, F(String(path + "/tenant").c_str()), F("null"));
+
+    return;
   }
 
-  const char *tenant = Firebase.RTDB.getString(&fbdo, F(String(path + "/tenant").c_str())) ? fbdo.to<const char *>() : "";
+  const char *tenant = Firebase.RTDB.getString(&fbdo, F(String(path + "/tenant").c_str())) ? fbdo.to<const char *>() : "null";
 
   /* Update LCD */
   lcd.setCursor(0, 0);
   lcd.print('#');
   lcd.print(number);
 
+  if (strcmp(tenant, "null") == 0)
+    return;
+
   lcd.setCursor(0, 1);
   lcd.print(tenant);
 }
 
 void streamCallback(FirebaseStream data) {
-  if (!data.boolData())
-    return;
+  String streamPath = String(data.dataPath());
 
-  unlocked = true;
+  if (streamPath.equals("/open")) {
+    if (data.dataTypeEnum() != firebase_rtdb_data_type_boolean || !data.boolData())
+      return;
+
+    unlocked = true;
+
+  } else if (streamPath.equals("/tenant")) {
+    if (data.dataTypeEnum() != firebase_rtdb_data_type_string)
+      return;
+
+    lcd.setCursor(0, 1);
+
+    if (data.stringData().equals("null")) {
+      for (int i = 0; i < 16; ++i)
+        lcd.print(" ");
+
+      return;
+    }
+
+    lcd.print(data.stringData());
+
+  } else if (streamPath.equals("/number")) {
+    if (data.dataTypeEnum() != firebase_rtdb_data_type_integer)
+      return;
+
+    lcd.setCursor(0, 0);
+    lcd.print('#');
+    lcd.print(data.intData());
+  }
 }
 
 void streamTimeoutCallback(bool timeout) {
@@ -173,7 +206,7 @@ void setup() {
 
   config.timeout.serverResponse = 10 * 1000;
 
-  if (!Firebase.RTDB.beginStream(&stream, String(path + "/open").c_str()))
+  if (!Firebase.RTDB.beginStream(&stream, path.c_str()))
     Serial_Printf("Stream begin error, %s\n\n", stream.errorReason().c_str());
 
   Firebase.RTDB.setStreamCallback(&stream, streamCallback, streamTimeoutCallback);
