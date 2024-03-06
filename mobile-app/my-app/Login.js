@@ -3,6 +3,8 @@ import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-nat
 import { initializeApp } from '@firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import { StatusBar } from 'expo-status-bar';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2nXSw9uKV4QI_3NnMys_faH2Nzl4ArME",
@@ -83,6 +85,14 @@ export default App = ({navigation}) => {
         console.log('User signed in successfully!');
         navigation.navigate('Home');
       }
+
+        const userRef = firebase.database().ref(`users/${user.uid}`);
+        userRef.set({
+        name: user.email, // Puedes cambiar esto según los datos que quieras almacenar
+        access: true, // Otra información relevante
+        locker: null, // Inicialmente sin casillero asignado
+        role: 'user',
+    });
     } catch (error) {
       console.error('Authentication error:', error.message);
     }
@@ -126,7 +136,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 8,
     borderRadius: 4,
-    width: 380,
+    width: 340,
   },
   welcomeTittle:{
     fontSize: 30,
@@ -143,7 +153,7 @@ const styles = StyleSheet.create({
   buttonStyle: {
     borderRadius: 6,
     backgroundColor:'black',
-    width: 380,
-    marginTop: 400,
+    width: 340,
+    marginTop: 300,
   },
 });

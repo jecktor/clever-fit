@@ -1,17 +1,79 @@
-
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getAuth } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, onValue, ref, update } from 'firebase/database'
 
-const Home = ({navigation}) => {
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA2nXSw9uKV4QI_3NnMys_faH2Nzl4ArME",
+  authDomain: "clever-fit-6084a.firebaseapp.com",
+  databaseURL: "https://clever-fit-6084a-default-rtdb.firebaseio.com",
+  projectId: "clever-fit-6084a",
+  storageBucket: "clever-fit-6084a.appspot.com",
+  messagingSenderId: "593225190659",
+  appId: "1:593225190659:web:be2970be06621d4f13ad36"
+};
+const openLocker = (lockerId) => {
+  update(ref(db, 'lockers/entries/' + lockerId), {
+    open: !isLockerOpen,
+  })
+};
+
+const closeLocker = (lockerId) => {
+  update(ref(db, 'lockers/entries/' + lockerId), {
+    open: !isLockerOpen,
+  })
+};
+
+const Home = ({ navigation }) => {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  const user = auth.currentUser;
+
   const [isLockerOpen, setIsLockerOpen] = useState(false);
+  const [locker, setLocker] = useState(null);
+  const [tenant, setTenant] = useState(null);
+
+  console.log(`isLockerOpen: ${isLockerOpen}`);
 
   const handleLockerPress = () => {
-    setIsLockerOpen((prevIsLockerOpen) => !prevIsLockerOpen);
+    onValue(ref(db, 'users/' + user.uid), (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setLocker(data.locker);
+        // Obtén el nombre del usuario directamente desde los datos
+        const userName = data.name;
+
+        onValue(ref(db, 'lockers/entries/' + locker), (snapshot) => {
+          const lockerData = snapshot.val();
+          if (lockerData) {
+            setTenant(lockerData.tenant);
+          }
+        });
+
+        console.log(tenant);
+
+        update(ref(db, 'lockers/entries/' + locker), {
+          open: !isLockerOpen,
+        });
+
+        console.log(locker);
+        setIsLockerOpen((prevIsLockerOpen) => !prevIsLockerOpen);
+        // Llama a openLocker o closeLocker según el estado actual de isLockerOpen
+
+        console.log(user.uid);
+        isLockerOpen ? closeLocker(locker) : openLocker(locker);
+      }
+    });
   };
+
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Welcome, User</Text>
+        <Text style={styles.title}>Welcome, {user.displayName || 'Guest'}</Text>
       </View>
       <View style={styles.content}>
         <View style={styles.box}>
@@ -23,6 +85,7 @@ const Home = ({navigation}) => {
             <Text style={styles.buttonText}>Change plan</Text>
           </Pressable>
         </View>
+          
         <View style={styles.box}>
           <Text style={styles.boxTitle}>Locker #7</Text>
           <Text style={styles.boxText2}>
@@ -31,6 +94,7 @@ const Home = ({navigation}) => {
           <Text style={styles.boxText1}>Nothing inside.</Text>
           <Pressable style={styles.button} onPress={handleLockerPress}>
             <Text style={styles.buttonText}>{isLockerOpen ? 'Close Locker' : 'Open Locker'}</Text>
+            
           </Pressable>
         </View>
       </View>
@@ -108,8 +172,10 @@ const styles = StyleSheet.create({
   accessCodeButton: {
     padding: 10,
     borderRadius: 5,
+    marginLeft: 20,
     alignItems: 'center',
     backgroundColor: 'black', 
+    width: 340,
   },
   accessCodeButtonText: {
     color: 'white',
