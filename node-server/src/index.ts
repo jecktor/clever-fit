@@ -156,6 +156,8 @@ app.post("/webhooks/stripe", async (req, res) => {
         .equalTo(subscription.id)
         .once("value");
 
+      if (!user.exists()) return;
+
       const userId = Object.keys(user.val())[0];
       const userRef = admin.database().ref(`users/${userId}`);
 
