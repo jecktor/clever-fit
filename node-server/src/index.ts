@@ -215,6 +215,7 @@ async function handleCheckoutComplete(
       .database()
       .ref(`users/${userId}`)
       .update({
+        access: true,
         subscription: {
           id: subscription.id,
           customerId: subscription.customer as string,
@@ -257,6 +258,7 @@ async function handleInvoiceSucceeded(invoice: stripe.Invoice) {
     const userRef = admin.database().ref(`users/${userId}`);
 
     userRef.update({
+      access: true,
       subscription: {
         id: subscription.id,
         customerId: subscription.customer as string,
@@ -283,6 +285,7 @@ function handleSubscriptionUpdate(
   );
 
   userRef.update({
+    access: true,
     subscription: {
       id: subscription.id,
       customerId: subscription.customer as string,
@@ -306,6 +309,7 @@ function handleSubscriptionCancel(
   );
 
   userRef.update({
+    access: true,
     subscription: {
       id: subscription.id,
       customerId: subscription.customer as string,
@@ -331,6 +335,7 @@ async function handleSubscriptionDelete(subscription: stripe.Subscription) {
   const userRef = admin.database().ref(`users/${userId}`);
 
   userRef.update({
+    access: false,
     subscription: null,
   });
 }
