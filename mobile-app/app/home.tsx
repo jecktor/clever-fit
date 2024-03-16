@@ -8,12 +8,12 @@ import {
   View,
   Image,
   ImageBackground,
-  Linking,
   type ImageSourcePropType,
 } from 'react-native';
 
 import { useFirebaseUser } from '../hooks';
 import { auth, db } from '../utils/firebase';
+import { manageSubscription } from '../utils/stripe';
 
 interface CardProps {
   title: string;
@@ -71,19 +71,6 @@ export default function Page() {
     });
   }
 
-  function handleManageSubscription() {
-    fetch('http://192.168.100.97:3001/create-billing-portal-link', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ customerId: user?.uid }),
-    })
-      .then((res) => res.json())
-      .then(({ url }) => Linking.openURL(url))
-      .catch(console.error);
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.main}>
@@ -118,7 +105,7 @@ export default function Page() {
                 })}.`}
                 action="Manage subscription"
                 background={require('../assets/plan.png')}
-                onPress={handleManageSubscription}
+                onPress={() => manageSubscription(user.uid)}
               />
               {locker ? (
                 <Card

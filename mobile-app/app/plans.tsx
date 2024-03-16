@@ -1,8 +1,9 @@
 import { Stack, router } from 'expo-router';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image, Linking } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 
 import { useFirebaseUser } from '../hooks';
+import { checkout } from '../utils/stripe';
 
 interface CardProps {
   title: string;
@@ -45,22 +46,6 @@ export default function Page() {
     return () => clearTimeout(timeout);
   }, [subscription]);
 
-  function handleCheckout(planId: number) {
-    fetch('http://192.168.100.97:3001/create-checkout-link', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        planId,
-        customerId: user?.uid,
-      }),
-    })
-      .then((res) => res.json())
-      .then(({ url }) => Linking.openURL(url))
-      .catch(console.error);
-  }
-
   return (
     <View style={styles.container}>
       <View style={styles.main}>
@@ -94,7 +79,7 @@ export default function Page() {
                 selected={plan === 1}
               />
             </View>
-            <TouchableOpacity style={styles.button} onPress={() => handleCheckout(plan)}>
+            <TouchableOpacity style={styles.button} onPress={() => checkout(plan, user.uid)}>
               <Text style={styles.buttonText}>Confirm</Text>
             </TouchableOpacity>
           </>
