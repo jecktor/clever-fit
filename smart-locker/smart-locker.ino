@@ -57,33 +57,25 @@ const unsigned long itemsInterval = 10000;
 String path = String("/lockers/entries/" + WiFi.macAddress());
 
 void streamCallback(FirebaseStream data) {
-  String streamPath = String(data.dataPath());
+  FirebaseJson json = data.jsonObject();
+  FirebaseJsonData result;
 
-  if (streamPath.equals("/open")) {
-    if (data.dataTypeEnum() != firebase_rtdb_data_type_boolean || !data.boolData())
-      return;
-
+  if (json.get(result, "open")) {
     unlocked = true;
 
-  } else if (streamPath.equals("/tenant")) {
-    if (data.dataTypeEnum() != firebase_rtdb_data_type_string)
-      return;
-
+  } else if (json.get(result, "tenant")) {
     lcd.setCursor(0, 1);
 
     for (int i = 0; i < 16; ++i)
       lcd.print(" ");
 
-    if (data.stringData().equals("null"))
+    if (result.stringValue.equals("null"))
       return;
 
     lcd.setCursor(0, 1);
-    lcd.print(data.stringData());
+    lcd.print(result.stringValue);
 
-  } else if (streamPath.equals("/number")) {
-    if (data.dataTypeEnum() != firebase_rtdb_data_type_integer)
-      return;
-
+  } else if (json.get(result, "number")) {
     lcd.setCursor(0, 0);
 
     for (int i = 0; i < 16; ++i)
@@ -91,7 +83,7 @@ void streamCallback(FirebaseStream data) {
 
     lcd.setCursor(0, 0);
     lcd.print('#');
-    lcd.print(data.intData());
+    lcd.print(result.intValue);
   }
 }
 
