@@ -1,12 +1,16 @@
-import { ThemeProvider, ModeToggle } from "@components";
-import { Button } from "@components/ui/button";
+import { Route } from "wouter";
+
+import { Analytics, Login, UserAdmin, LockerAdmin } from "@routes";
+
+import { ThemeProvider } from "@components";
 
 export default function App() {
   return (
     <ThemeProvider>
-      <h1>Vite + React</h1>
-      <Button>Test</Button>
-      <ModeToggle />
+      <Route path="/" component={Analytics} />
+      <Route path="/login" component={Login} />
+      <Route path="/user-admin" component={UserAdmin} />
+      <Route path="/locker-admin" component={LockerAdmin} />
     </ThemeProvider>
   );
 }
