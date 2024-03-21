@@ -45,6 +45,41 @@ app.use(
   }),
 );
 
+app.get("/analytics", async (_, res) => {
+  const charges = await stripeInstance.charges.list({
+    limit: 100,
+  });
+
+  const monthCharges = charges.data.filter(
+    (charge) =>
+      charge.created >
+      Math.floor(new Date().getTime() / 1000) - 30 * 24 * 60 * 60,
+  );
+
+  const lastMonthCharges = charges.data.filter(
+    (charge) =>
+      charge.created >
+      Math.floor(new Date().getTime() / 1000) - 60 * 24 * 60 * 60,
+  );
+
+  const monthRevenue =
+    monthCharges.reduce((acc, charge) => acc + charge.amount, 0) / 100;
+
+  const lastMonthRevenue =
+    lastMonthCharges.reduce((acc, charge) => acc + charge.amount, 0) / 100 -
+    monthRevenue;
+
+  const monthSubscriptions = monthCharges.length;
+  const lastMonthSubscriptions = lastMonthCharges.length - monthSubscriptions;
+
+  res.json({
+    monthRevenue,
+    lastMonthRevenue,
+    monthSubscriptions,
+    lastMonthSubscriptions,
+  });
+});
+
 // Plan subscription checkout session endpoint. (Only for first time subscription)
 app.post("/create-checkout-link", async (req, res) => {
   const { planId, customerId } = req.body;
