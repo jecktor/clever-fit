@@ -1,8 +1,10 @@
 import { Stack, Link, router } from 'expo-router';
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ImageBackground } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ImageBackground, LogBox } from 'react-native';
 
 import { auth } from '../utils/firebase';
+
+LogBox.ignoreLogs(['Warning']);
 
 export default function Page() {
   const [user, setUser] = useState(auth.currentUser);
