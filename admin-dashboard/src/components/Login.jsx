@@ -24,6 +24,7 @@ export function Login() {
       if (!user.email.includes('@adminclever.com')) {
         setError('Acceso denegado. Debes ser administrador para iniciar sesión.');
       } else {
+        console.log('hola')
         navigate('/');
       }
     } catch (error) {
@@ -47,8 +48,6 @@ export function Login() {
         setError(error.message);
       }
     }
-    
-
     return (
       <div className='bg-slate-300 text-black h-screen flex'>
       <div className="w-full max-w-xs m-auto">

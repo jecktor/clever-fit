@@ -22,14 +22,14 @@ export function Register() {
     setError("");
     try {
       await signup(user.email, user.password);
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       setError(error.message);
     }
   };
 
   return (
-    <div className='bg-slate-300 text-black h-screen flex text-white'>
+    <div className='bg-slate-300 text-black h-screen flex'>
     <div className="w-full max-w-xs m-auto text-black">
       {error && <Alert message={error} />}
 

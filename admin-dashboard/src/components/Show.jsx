@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserPen, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { dbRealtime } from '../firebase';
 import { ref, onValue } from 'firebase/database';
-import { deleteUser } from "firebase/auth";
 import { auth } from "../firebase";
 const MySwal = withReactContent(Swal);
 
@@ -32,9 +31,8 @@ function Show() {
     // 4 -Funcion para eliminar
     const eliminarRegistro = async (id)=>{
         try {
-        const usuarioDoc = doc(db, "usuarios", id);
-        await deleteUser(usuarioDoc);
-        await getRegistros()
+        const registrosdoc = doc(db,"usuarios",id);
+        await deleteDoc(registrosdoc);
         } catch (error) {
          console.error(error);
         }
@@ -52,11 +50,11 @@ function Show() {
           }).then((result) => {
             if (result.isConfirmed) {
                 eliminarRegistro(id);
-              Swal.fire({
-                title: "Eliminado!",
-                text: "El usuario se eliminó con éxito",
-                icon: "success"
-              });
+                Swal.fire({
+                    title: "Eliminado!",
+                    text: "El usuario se eliminó con éxito",
+                    icon: "success"
+                });
             }
           });
     }
