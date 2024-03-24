@@ -1,37 +1,47 @@
+// datatable.jsx
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { userColumns, userRows } from "../../datatablesource";
+import { userColumns } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { collection, getDocs, deleteDoc, doc, onSnapshot } from "firebase/firestore";
-import { ref, onValue } from 'firebase/database';
-import {db, dbRealtime} from "../../firebase";
+import { ref, onValue, remove } from 'firebase/database';
+import { db, dbRealtime } from "../../firebase";
 
 const Datatable = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({email: '', password: '' });
 
-  useEffect(()=>{
+  useEffect(() => {
     const unsub = onSnapshot(collection(db, "usuarios"), (snapShot) => {
       let list = [];
-      snapShot.docs.forEach(doc=>{
-        list.push({id:doc.id, ...doc.data()})
+      snapShot.docs.forEach(doc => {
+        list.push({ id: doc.id, ...doc.data() });
       });
-      setData(list)
-  },(error)=>{
-    console.log(error)
-  });
-  return() =>{
-    unsub();
-  }
-  },[])
-  const handleDelete = async(id) => {
+      setData(list);
+    }, (error) => {
+      console.log(error);
+    });
+
+    const usersRef = ref(dbRealtime, 'users');
+    onValue(usersRef, (snapshot) => {
+      const rtData = snapshot.val();
+      // Aquí puedes procesar los datos obtenidos de la base de datos en tiempo real
+      console.log(rtData);
+    });
+
+    return () => {
+      unsub();
+    }
+  }, []);
+
+  const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "usuarios", id));
+      await remove(ref(dbRealtime, 'users/' + id));
       setData(data.filter((item) => item.id !== id));
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    
   };
 
   const actionColumn = [
@@ -43,19 +53,17 @@ const Datatable = () => {
         return (
           <div className="cellAction">
             <Link to="/users/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
+              <div className="viewButton">Ver</div>
             </Link>
-            <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row.id)}
-            >
-              Delete
+            <div className="deleteButton" onClick={() => handleDelete(params.row.id)}>
+              Eliminar
             </div>
           </div>
         );
       },
     },
   ];
+
   return (
     <div className="datatable">
       <div className="datatableTitle">

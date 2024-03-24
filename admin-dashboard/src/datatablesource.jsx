@@ -1,5 +1,4 @@
 export const userColumns = [
-  { field: "id", headerName: "ID", width: 70 },
   {
     field: "user",
     headerName: "Usuario",
@@ -7,8 +6,8 @@ export const userColumns = [
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img} alt="avatar" />
-          {params.row.name}
+          <img className="cellImg" src={params.row.img || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"} alt="avatar" />
+          {params.row.name || 'Sin nombre'}
         </div>
       );
     },
@@ -30,8 +29,8 @@ export const userColumns = [
     width: 120,
     renderCell: (params) => {
       return (
-        <div className={`cellWithStatus ${params.row.status}`}>
-          {params.row.locker}
+        <div className={`cellWithStatus ${params.row.locker ? 'active' : 'passive'}`}>
+          {params.row.locker ? 'Activo' : 'Inactivo'}
         </div>
       );
     },
@@ -40,6 +39,13 @@ export const userColumns = [
     field: "subscription",
     headerName: "Suscripción",
     width: 100,
+    renderCell: (params) => {
+      return (
+        <div className={`cellWithStatus ${params.row.subscription ? 'active' : 'passive'}`}>
+          {params.row.subscription ? 'Activo' : 'Inactivo'}
+        </div>
+      );
+    },
   },
 ];
 

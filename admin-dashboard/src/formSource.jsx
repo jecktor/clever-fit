@@ -27,7 +27,7 @@ export const userInputs = [
       type: "password",
     },
     {
-      id: "subscription",
+      id: "access",
       label: "Suscripción",
       type: "boolean",
       placeholder: "Si",
@@ -38,12 +38,6 @@ export const userInputs = [
       type: "text",
       placeholder: "pro",
     },
-     {
-    id: "access",
-    label: "Acceso",
-    type: "boolean",
-    placeholder: "Acceso",
-  },
   ];
   
   export const productInputs = [
