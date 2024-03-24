@@ -1,4 +1,4 @@
-import { UserMinus } from "lucide-react";
+import { X, Pencil, Ellipsis } from "lucide-react";
 
 import { Layout } from "@components";
 import { Button } from "@components/ui/button";
@@ -10,13 +10,24 @@ import {
   TableHeader,
   TableRow,
 } from "@components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@components/ui/dropdown-menu";
 
 export function UserAdmin() {
   return (
     <Layout>
-      <h1 className="text-[1.875rem] font-semibold leading-none">
-        User Administration
-      </h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-[1.875rem] font-semibold leading-none">
+          User Administration
+        </h1>
+        <Button>Add user</Button>
+      </div>
       <p className="mt-2 text-muted-foreground">
         Manage your users and their subscriptions.
       </p>
@@ -39,9 +50,23 @@ export function UserAdmin() {
               <TableCell>Pro</TableCell>
               <TableCell>May 24, 2024</TableCell>
               <TableCell className="flex gap-4 items-center justify-end">
-                <Button variant="ghost">
-                  <UserMinus className="w-5 h-5" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Ellipsis className="w-4 h-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
+                      <Pencil className="w-4 h-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
+                      <X className="w-4 h-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           </TableBody>

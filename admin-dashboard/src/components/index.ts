@@ -5,3 +5,4 @@ export { HoursChart } from "./HoursChart";
 export { ModeToggle } from "./ModeToggle";
 export { SubsChart } from "./SubsChart";
 export { Layout } from "./Layout";
+export { Locker } from "./Locker";
