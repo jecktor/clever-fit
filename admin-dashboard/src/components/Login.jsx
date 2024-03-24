@@ -8,9 +8,10 @@ export function Login() {
     email: '',
     password: '',
   });
-  const { login, loginWithGoogle, resetPassword } = useAuth();
+  const { login, resetPassword } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState();
+  
 
   const handleChange = ({target: {name, value}}) => {
     setUser({...user, [name]: value});
@@ -27,17 +28,9 @@ export function Login() {
         navigate('/');
       }
     } catch (error) {
-      setError(error.message); // Establecer el estado error con el mensaje de error
+      setError("Credenciales inválidas"); // Establecer el estado error con el mensaje de error
     }
   };
-    const handleGoogleSignin = async () => {
-        try {
-          await loginWithGoogle();
-          navigate('/');
-        } catch (error) {
-          setError(error.message);
-        }
-    };
     const handleResetPassword = async() => {
       if(!user.email) return setError("Por favor, inserte su correo");
       try {
@@ -47,8 +40,6 @@ export function Login() {
         setError(error.message);
       }
     }
-    
-
     return (
       <div className='bg-slate-300 text-black h-screen flex'>
       <div className="w-full max-w-xs m-auto">
@@ -107,18 +98,18 @@ export function Login() {
             </a>
           </div>
         </form>
-        <button
+        {/* <button
           onClick={handleGoogleSignin}
           className="bg-slate-50 hover:bg-slate-200 text-black  shadow rounded border-2 border-gray-300 py-2 px-4 w-full"
         >
           Inicie sesión con google.
-        </button>
-        <p className="my-4 text-sm flex justify-between px-3 text-gray-900 ">
+        </button> */}
+        {/* <p className="my-4 text-sm flex justify-between px-3 text-gray-900 ">
           No tiene una cuenta?
           <Link to="/registroAdmin" className="text-blue-700 hover:text-blue-900">
             Regístrese.
           </Link>
-        </p>
+        </p> */}
       </div>
       </div>
     );
