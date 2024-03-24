@@ -4,25 +4,13 @@ import { userColumns, userRows } from "../../datatablesource";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { collection, getDocs, deleteDoc, doc, onSnapshot } from "firebase/firestore";
-import {db} from "../../firebase";
+import { ref, onValue } from 'firebase/database';
+import {db, dbRealtime} from "../../firebase";
 
 const Datatable = () => {
   const [data, setData] = useState([]);
 
   useEffect(()=>{
-    // const fetchData = async ()=>{
-    //   let list = [];
-    //   try{
-    //             const querySnapshot = await getDocs(collection(db, "usuarios"));
-    //           querySnapshot.forEach((doc) => {
-    //             list.push({id: doc.id, ...doc.data()})
-    //     });
-    //     setData(list)
-    //   }catch(error){
-    //     console.log(error);
-    //   }
-    // };
-    // fetchData();
     const unsub = onSnapshot(collection(db, "usuarios"), (snapShot) => {
       let list = [];
       snapShot.docs.forEach(doc=>{
@@ -36,8 +24,6 @@ const Datatable = () => {
     unsub();
   }
   },[])
-  // console.log(data[0].email)
-
   const handleDelete = async(id) => {
     try {
       await deleteDoc(doc(db, "usuarios", id));
@@ -84,7 +70,6 @@ const Datatable = () => {
         columns={userColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
-        checkboxSelection
       />
     </div>
   );

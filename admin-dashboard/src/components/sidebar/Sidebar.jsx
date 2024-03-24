@@ -19,7 +19,6 @@ import { useAuth } from '../../context/authContext';
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const {user, logout, loading} = useAuth();
-  console.log(user);
   const handleLogout = async() => {
     try {
        await logout()
@@ -40,12 +39,14 @@ const Sidebar = () => {
       <hr />
       <div className="center">
         <ul>
-          <p className="title">MAIN</p>
+          <p className="title">PRINCIPAL</p>
           <li>
+          <Link to="/" style={{ textDecoration: "none" }}>
             <DashboardIcon className="icon" />
-            <span>Dashboard</span>
+            <span>Panel de Control</span>
+          </Link>
           </li>
-          <p className="title">LISTS</p>
+          <p className="title">LISTAS</p>
           <Link to="/users" style={{ textDecoration: "none" }}>
             <li>
               <PersonOutlineIcon className="icon" />
@@ -58,11 +59,7 @@ const Sidebar = () => {
               <span>Casilleros</span>
             </li>
           </Link>
-          <p className="title">USER</p>
-          <li>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Perfil</span>
-          </li>
+          <p className="title">USUARIO</p>
           <li>
             <ExitToAppIcon className="icon" />
             <span onClick={handleLogout}>Cerrar sesión</span>

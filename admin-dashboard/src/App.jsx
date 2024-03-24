@@ -4,8 +4,6 @@ import { Login } from './components/Login';
 import { Register } from './components/Register';
 import {AuthProvider} from './context/authContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import  RentaLocker from "./Pages/RentaLocker";
-import {UserRegister}  from "./Pages/UserRegister";
 import Show from './components/Show';
 import  Edit from './components/Edit';
 import Create from './components/Create';
@@ -32,8 +30,6 @@ export default function App() {
         </ProtectedRoute>
       } 
        />
-      <Route path='/userRegister' element={<ProtectedRoute><UserRegister/></ProtectedRoute>}/>
-      <Route path='/rentaLocker' element={<ProtectedRoute><RentaLocker/></ProtectedRoute>}/>
       <Route path='/show' element={<ProtectedRoute><Show/></ProtectedRoute>}/>
       <Route path="users">
               <Route index element={<ProtectedRoute><List /></ProtectedRoute>} />

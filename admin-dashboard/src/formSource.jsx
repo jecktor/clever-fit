@@ -38,6 +38,12 @@ export const userInputs = [
       type: "text",
       placeholder: "pro",
     },
+     {
+    id: "access",
+    label: "Acceso",
+    type: "boolean",
+    placeholder: "Acceso",
+  },
   ];
   
   export const productInputs = [
@@ -71,5 +77,6 @@ export const userInputs = [
       type: "text",
       placeholder: "in stock",
     },
+
   ];
   

@@ -2,7 +2,7 @@ import "./new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { doc, serverTimestamp, setDoc} from "firebase/firestore"; 
-import { auth, db, storage } from "../../firebase.js";
+import { authusuarios, db, storage } from "../../firebase.js";
 import {createUserWithEmailAndPassword } from "firebase/auth";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState, useEffect } from "react";
@@ -60,7 +60,7 @@ uploadTask.on('state_changed',
     e.preventDefault();
     try {
       const res = await createUserWithEmailAndPassword(
-        auth,
+        authusuarios,
         data.email,
         data.password
       );
