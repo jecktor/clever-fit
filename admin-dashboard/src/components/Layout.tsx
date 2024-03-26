@@ -1,18 +1,18 @@
-import { useState, useRef, useMemo, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { useLocation } from "wouter";
 import {
   Dumbbell,
   AreaChart,
   Settings,
-  User,
   Users,
-  Search,
   LogOut,
   Container,
 } from "lucide-react";
+import { auth } from "@lib/firebase";
+import { useFirebaseUser } from "@hooks";
 
 import { SidebarLink, ModeToggle } from "@components";
-import { Input } from "@components/ui/input";
+import { Toaster } from "@components/ui/toaster";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,15 +28,11 @@ interface LayoutProps {
 }
 
 export function Layout({ children }: LayoutProps) {
-  const [searchbarFocus, setSearchbarFocus] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [users, setUsers] = useState([]);
-
+  const user = useFirebaseUser();
   const [location] = useLocation();
-
   const sidebar = useRef<HTMLElement>(null);
 
-  const filteredUsers = useMemo(() => users, [searchQuery, users]);
+  if (!user) return null;
 
   return (
     <>
@@ -56,11 +52,17 @@ export function Layout({ children }: LayoutProps) {
             <AreaChart className="h-4 w-4" />
             Analytics
           </SidebarLink>
-          <SidebarLink to="/user-admin" active={location === "/user-admin"}>
+          <SidebarLink
+            to="/user-admin"
+            active={location.includes("/user-admin")}
+          >
             <Users className="h-4 w-4" />
             User Administration
           </SidebarLink>
-          <SidebarLink to="/locker-admin" active={location === "/locker-admin"}>
+          <SidebarLink
+            to="/locker-admin"
+            active={location.includes("/locker-admin")}
+          >
             <Container className="h-4 w-4" />
             Locker Administration
           </SidebarLink>
@@ -69,7 +71,7 @@ export function Layout({ children }: LayoutProps) {
 
       <div className="h-screen lg:ml-72">
         <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-lg">
-          <div className="flex h-[60px] items-center justify-between gap-4 px-8">
+          <div className="flex h-[60px] items-center justify-between gap-4 px-8 lg:justify-end">
             <button
               onClick={() => sidebar.current?.classList.toggle("hidden")}
               aria-label="toggle sidebar"
@@ -78,63 +80,39 @@ export function Layout({ children }: LayoutProps) {
               <Dumbbell className="h-5 w-5" />
             </button>
 
-            <div className="flex-1">
-              {
-                // location === "dashboard" && (
-                true && (
-                  <div className="relative">
-                    <Search className="absolute left-2.5 top-[11px] h-4 w-4 text-muted-foreground" />
-                    <Input
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onFocus={() => setSearchbarFocus(true)}
-                      onBlur={() => setSearchbarFocus(false)}
-                      className="max-w-xl pl-8 md:w-2/3 lg:w-1/3"
-                      placeholder="Search users..."
-                    />
-                    {searchbarFocus && filteredUsers.length === 0 && (
-                      <div className="absolute top-[50px] flex w-full max-w-xl flex-col rounded-b-md border bg-background p-1 text-sm md:w-2/3 lg:w-1/3">
-                        {filteredUsers.map((user, i) => (
-                          <a key={i} href={`#${i}`}>
-                            <div className="flex items-center gap-2 rounded-md p-2 hover:bg-muted">
-                              <User className="h-4 min-h-4 w-4 min-w-4" />
-                              <span>User</span>
-                            </div>
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )
-              }
+            <div className="flex items-center gap-4">
+              <ModeToggle />
+
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Settings className="h-5 w-5" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    {
+                      // <form use:enhance method="post" action="?/signout">
+                    }
+                    <button className="w-full" type="submit">
+                      <DropdownMenuItem
+                        onClick={() => auth.signOut()}
+                        className="cursor-pointer"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </button>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-
-            <ModeToggle />
-
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Settings className="h-5 w-5" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  {
-                    // <form use:enhance method="post" action="?/signout">
-                  }
-                  <button className="w-full" type="submit">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </button>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </header>
 
         <main className="px-8 pt-8">{children}</main>
       </div>
+      <Toaster />
     </>
   );
 }

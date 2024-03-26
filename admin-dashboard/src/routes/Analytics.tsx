@@ -1,4 +1,4 @@
-import { Layout, RevenueChart, SubsChart, HoursChart } from "@components";
+import { Layout, RevenueChart, StatsCards, HoursChart } from "@components";
 
 export function Analytics() {
   return (
@@ -8,12 +8,12 @@ export function Analytics() {
         See how your business is performing.
       </p>
 
-      <div className="mt-8 flex flex-col gap-8 lg:flex-row">
-        <RevenueChart />
-        <SubsChart />
+      <div className="mt-8">
+        <StatsCards />
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 flex flex-col gap-8 lg:flex-row">
+        <RevenueChart />
         <HoursChart />
       </div>
     </Layout>

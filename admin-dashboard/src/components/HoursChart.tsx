@@ -55,7 +55,7 @@ const data = [
 
 export function HoursChart() {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-base font-normal">
           Most Active Hours

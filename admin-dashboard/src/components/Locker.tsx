@@ -30,7 +30,13 @@ export function Locker({ number, hasItems, open, tenant }: LockerProps) {
           <Tooltip>
             <TooltipTrigger>
               <div
-                className={`rounded-lg w-12 h-12 grid place-items-center shadow-md text-background ${open ? "bg-teal-500" : tenant ? "bg-muted-foreground" : "bg-foreground"} ${hasItems ? "border-2 border-pink-600" : ""}`}
+                className={`rounded-lg w-12 h-12 grid place-items-center shadow-md text-background ${
+                  open
+                    ? "bg-teal-500"
+                    : tenant
+                      ? "bg-muted-foreground"
+                      : "bg-foreground"
+                } ${hasItems ? "border-2 border-pink-600" : ""}`}
               >
                 {number}
               </div>

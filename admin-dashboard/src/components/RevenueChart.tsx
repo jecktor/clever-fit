@@ -23,14 +23,13 @@ const data = [
 
 export function RevenueChart() {
   return (
-    <Card className="w-full">
+    <Card className="w-full h-fit">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-base font-normal">Total Revenue</CardTitle>
+        <CardTitle className="text-base font-normal">Revenue</CardTitle>
       </CardHeader>
       <CardContent className="pb-4">
-        <div className="text-2xl font-bold">$15,231.89</div>
-        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-        <div className="h-[200px]">
+        <div className="text-2xl font-bold">Overview</div>
+        <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={data}
