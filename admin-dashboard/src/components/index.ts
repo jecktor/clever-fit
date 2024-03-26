@@ -6,6 +6,7 @@ export { ModeToggle } from "./ModeToggle";
 export { CreateUser } from "./CreateUser";
 export { StatsCards } from "./StatsCards";
 export { DataTable } from "./DataTable";
+export { EditUser } from "./EditUser";
 export { Loading } from "./Loading";
 export { Layout } from "./Layout";
 export { Locker } from "./Locker";

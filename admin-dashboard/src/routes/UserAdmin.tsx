@@ -8,8 +8,11 @@ import { Layout, DataTable, CreateUser, Loading } from "@components";
 export function UserAdmin() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refetch, setRefetch] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
+
     const usersRef = ref(db, "users");
 
     get(usersRef).then((snapshot) => {
@@ -23,8 +26,9 @@ export function UserAdmin() {
       );
 
       setLoading(false);
+      setRefetch(false);
     });
-  }, []);
+  }, [refetch]);
 
   return (
     <Layout>
@@ -39,7 +43,11 @@ export function UserAdmin() {
       </p>
 
       <div className="mt-8 flex flex-col gap-8 lg:flex-row">
-        {loading ? <Loading /> : <DataTable data={users} />}
+        {loading ? (
+          <Loading />
+        ) : (
+          <DataTable data={users} onChanges={() => setRefetch(true)} />
+        )}
       </div>
     </Layout>
   );

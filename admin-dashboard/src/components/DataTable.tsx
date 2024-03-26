@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import type { User } from "@types";
 
+import { EditUser } from "@components";
 import { Button } from "@components/ui/button";
 import {
   DropdownMenu,
@@ -40,96 +41,112 @@ import {
   TableRow,
 } from "@components/ui/table";
 
-const columns: ColumnDef<User>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "subscription.plan",
-    header: "Plan",
-    cell: ({ row }) => {
-      const plan = row.original.subscription?.plan;
-
-      if (!plan) return <div className="text-muted-foreground">&mdash;</div>;
-
-      return <div>{plan}</div>;
-    },
-  },
-  {
-    accessorKey: "subscription.currentPeriodEnd",
-    header: () => <div className="text-right">Period End</div>,
-    cell: ({ row }) => {
-      const currentPeriodEnd = row.original.subscription?.currentPeriodEnd;
-
-      if (!currentPeriodEnd)
-        return (
-          <div className="text-right font-medium text-muted-foreground">
-            &mdash;
-          </div>
-        );
-
-      const formatted = new Date(currentPeriodEnd).toLocaleDateString("en-us", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      });
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
-            <Pencil className="w-4 h-4" />
-            Edit
-          </DropdownMenuItem>
-          <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
-            <X className="w-4 h-4" />
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-  },
-];
-
 interface DataTableProps {
   data: User[];
+  onChanges: () => void;
 }
 
-export function DataTable({ data }: DataTableProps) {
+export function DataTable({ data, onChanges }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [modalUser, setModalUser] = useState<User | null>(null);
+  const [editing, setEditing] = useState(false);
+
+  const columns: ColumnDef<User>[] = [
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("name")}</div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Email
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => (
+        <div className="lowercase">{row.getValue("email")}</div>
+      ),
+    },
+    {
+      accessorKey: "subscription.plan",
+      header: "Plan",
+      cell: ({ row }) => {
+        const plan = row.original.subscription?.plan;
+
+        if (!plan) return <div className="text-muted-foreground">&mdash;</div>;
+
+        return <div>{plan}</div>;
+      },
+    },
+    {
+      accessorKey: "subscription.currentPeriodEnd",
+      header: () => <div className="text-right">Period End</div>,
+      cell: ({ row }) => {
+        const currentPeriodEnd = row.original.subscription?.currentPeriodEnd;
+
+        if (!currentPeriodEnd)
+          return (
+            <div className="text-right font-medium text-muted-foreground">
+              &mdash;
+            </div>
+          );
+
+        const formatted = new Date(currentPeriodEnd).toLocaleDateString(
+          "en-us",
+          {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          },
+        );
+
+        return <div className="text-right font-medium">{formatted}</div>;
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                setModalUser(row.original);
+                setEditing(true);
+              }}
+              className="flex items-center gap-2 hover:cursor-pointer"
+            >
+              <Pencil className="w-4 h-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
+              <X className="w-4 h-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -253,6 +270,14 @@ export function DataTable({ data }: DataTableProps) {
           </Button>
         </div>
       </div>
+      {modalUser && (
+        <EditUser
+          user={modalUser}
+          dialogOpen={editing}
+          setDialogOpen={setEditing}
+          onUpdate={onChanges}
+        />
+      )}
     </div>
   );
 }
