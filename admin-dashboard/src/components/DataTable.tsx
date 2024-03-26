@@ -18,9 +18,9 @@ import {
   Pencil,
   X,
 } from "lucide-react";
+import type { User } from "@types";
 
 import { Button } from "@components/ui/button";
-import { Checkbox } from "@components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -40,75 +40,7 @@ import {
   TableRow,
 } from "@components/ui/table";
 
-const data: User[] = [
-  {
-    id: "m5gr84i9",
-    name: "Ken Nguyen",
-    email: "ken99@yahoo.com",
-    plan: "Pro",
-    periodEnd: "2022-08-01",
-  },
-  {
-    id: "3u1reuv4",
-    name: "Jaden Smith",
-    email: "Abe45@gmail.com",
-    plan: "Basic",
-    periodEnd: "2022-08-01",
-  },
-  {
-    id: "derv1ws0",
-    name: "Liana Kuhn",
-    email: "Monserrat44@gmail.com",
-    plan: "Pro",
-    periodEnd: "2022-08-01",
-  },
-  {
-    id: "5kma53ae",
-    name: "Silas Kessler",
-    email: "Silas22@gmail.com",
-    plan: "Basic",
-    periodEnd: "2022-08-01",
-  },
-  {
-    id: "bhqecj4p",
-    name: "Carmella Kuhic",
-    email: "carmella@hotmail.com",
-    plan: "Pro",
-    periodEnd: "2022-08-01",
-  },
-];
-
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  plan: "Basic" | "Pro";
-  periodEnd: string;
-};
-
 const columns: ColumnDef<User>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "name",
     header: "Name",
@@ -130,21 +62,34 @@ const columns: ColumnDef<User>[] = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
-    accessorKey: "plan",
+    accessorKey: "subscription.plan",
     header: "Plan",
+    cell: ({ row }) => {
+      const plan = row.original.subscription?.plan;
+
+      if (!plan) return <div className="text-muted-foreground">&mdash;</div>;
+
+      return <div>{plan}</div>;
+    },
   },
   {
-    accessorKey: "periodEnd",
+    accessorKey: "subscription.currentPeriodEnd",
     header: () => <div className="text-right">Period End</div>,
     cell: ({ row }) => {
-      const formatted = new Date(row.getValue("periodEnd")).toLocaleDateString(
-        "en-us",
-        {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        },
-      );
+      const currentPeriodEnd = row.original.subscription?.currentPeriodEnd;
+
+      if (!currentPeriodEnd)
+        return (
+          <div className="text-right font-medium text-muted-foreground">
+            &mdash;
+          </div>
+        );
+
+      const formatted = new Date(currentPeriodEnd).toLocaleDateString("en-us", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
 
       return <div className="text-right font-medium">{formatted}</div>;
     },
@@ -177,11 +122,14 @@ const columns: ColumnDef<User>[] = [
   },
 ];
 
-export function DataTable() {
+interface DataTableProps {
+  data: User[];
+}
+
+export function DataTable({ data }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -193,12 +141,10 @@ export function DataTable() {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
-      rowSelection,
     },
   });
 
@@ -233,7 +179,7 @@ export function DataTable() {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {column.id.replace("_", " ")}
                   </DropdownMenuCheckboxItem>
                 );
               })}
@@ -263,10 +209,7 @@ export function DataTable() {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -291,10 +234,6 @@ export function DataTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
         <div className="space-x-2">
           <Button
             variant="outline"

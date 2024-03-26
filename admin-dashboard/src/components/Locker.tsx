@@ -28,7 +28,7 @@ export function Locker({ number, hasItems, open, tenant }: LockerProps) {
       <DropdownMenuTrigger>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <div
                 className={`rounded-lg w-12 h-12 grid place-items-center shadow-md text-background ${
                   open
