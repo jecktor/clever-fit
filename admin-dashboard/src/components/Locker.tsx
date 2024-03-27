@@ -1,5 +1,8 @@
+import { update, ref } from "firebase/database";
+import { db } from "@lib/firebase";
 import { UserPlus, UserMinus, LockOpen } from "lucide-react";
 
+import { useToast } from "@components/ui/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,16 +19,63 @@ import {
 } from "@components/ui/tooltip";
 
 interface LockerProps {
+  id: string;
   number: number;
   hasItems: boolean;
   open: boolean;
+  onAssignTenant: (lockerId: string) => void;
   tenant?: string;
+  tenantId?: string;
+  isDemo?: boolean;
 }
 
-export function Locker({ number, hasItems, open, tenant }: LockerProps) {
+export function Locker({
+  id,
+  number,
+  hasItems,
+  open,
+  onAssignTenant,
+  tenant,
+  tenantId,
+  isDemo = false,
+}: LockerProps) {
+  const { toast } = useToast();
+
+  function handleOpen() {
+    if (isDemo) return;
+
+    update(ref(db, `lockers/entries/${id}`), {
+      open: true,
+    });
+  }
+
+  function handleRemoveTenant() {
+    if (isDemo) return;
+
+    if (hasItems) {
+      toast({
+        title: "Locker has items",
+        description: "Please remove items before removing tenant.",
+      });
+
+      return;
+    }
+
+    update(ref(db, `lockers/entries/${id}`), {
+      tenant: null,
+      tenantId: null,
+    });
+
+    update(ref(db, `users/${tenantId}`), {
+      locker: null,
+    });
+
+    toast({ title: "Tenant removed" });
+  }
+
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="outline-none">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -48,17 +98,26 @@ export function Locker({ number, hasItems, open, tenant }: LockerProps) {
       <DropdownMenuContent>
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
+        <DropdownMenuItem
+          onClick={handleOpen}
+          className="flex items-center gap-2 hover:cursor-pointer"
+        >
           <LockOpen className="w-4 h-4" />
           Open
         </DropdownMenuItem>
         {tenant ? (
-          <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
+          <DropdownMenuItem
+            onClick={handleRemoveTenant}
+            className="flex items-center gap-2 hover:cursor-pointer"
+          >
             <UserMinus className="w-4 h-4" />
             Remove tenant
           </DropdownMenuItem>
         ) : (
-          <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => onAssignTenant(id)}
+            className="flex items-center gap-2 hover:cursor-pointer"
+          >
             <UserPlus className="w-4 h-4" />
             Assign tenant
           </DropdownMenuItem>

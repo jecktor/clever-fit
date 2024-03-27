@@ -48,7 +48,6 @@ export function CreateUser({ onCreate }: CreateUserProps) {
           access: false,
           name: data.name,
           email: data.email,
-          role: "user",
         });
 
         userAuth.signOut();

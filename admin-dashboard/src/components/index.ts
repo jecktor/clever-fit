@@ -1,4 +1,5 @@
 export { ThemeProvider } from "./ThemeProvider";
+export { AssignTenant } from "./AssignTenant";
 export { RevenueChart } from "./RevenueChart";
 export { SidebarLink } from "./SidebarLink";
 export { HoursChart } from "./HoursChart";
