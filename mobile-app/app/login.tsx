@@ -27,16 +27,14 @@ export default function Page() {
 
     signInWithEmailAndPassword(auth, email, password)
       .then((credentials) => {
-        get(ref(db, `users/${credentials.user.uid}`)).then((snapshot) => {
-          const role = snapshot.val().role as string;
-
-          if (role === 'user') {
+        get(ref(db, `users/${credentials.user.uid}`))
+          .then((snapshot) => {
             const subscription = snapshot.val().subscription as any;
 
             if (subscription) router.replace('/home');
             else router.replace('/plans');
-          }
-        });
+          })
+          .catch((error) => setError(error.message));
       })
       .catch((error) => setError(error.message));
   }
