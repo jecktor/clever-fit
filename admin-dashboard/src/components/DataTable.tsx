@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import type { User } from "@types";
 
-import { EditUser } from "@components";
+import { EditUser, DeleteUser } from "@components";
 import { Button } from "@components/ui/button";
 import {
   DropdownMenu,
@@ -51,7 +51,9 @@ export function DataTable({ data, onChanges }: DataTableProps) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [modalUser, setModalUser] = useState<User | null>(null);
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const columns: ColumnDef<User>[] = [
     {
@@ -138,7 +140,13 @@ export function DataTable({ data, onChanges }: DataTableProps) {
               <Pencil className="w-4 h-4" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex items-center gap-2 hover:cursor-pointer">
+            <DropdownMenuItem
+              onClick={() => {
+                setDeleteUserId(row.original.id);
+                setDeleting(true);
+              }}
+              className="flex items-center gap-2 hover:cursor-pointer"
+            >
               <X className="w-4 h-4" />
               Delete
             </DropdownMenuItem>
@@ -276,6 +284,14 @@ export function DataTable({ data, onChanges }: DataTableProps) {
           dialogOpen={editing}
           setDialogOpen={setEditing}
           onUpdate={onChanges}
+        />
+      )}
+      {deleteUserId && (
+        <DeleteUser
+          id={deleteUserId}
+          dialogOpen={deleting}
+          setDialogOpen={setDeleting}
+          onDelete={onChanges}
         />
       )}
     </div>

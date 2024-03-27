@@ -23,7 +23,11 @@ interface FormInput {
   password: string;
 }
 
-export function CreateUser() {
+interface CreateUserProps {
+  onCreate: () => void;
+}
+
+export function CreateUser({ onCreate }: CreateUserProps) {
   const {
     register,
     reset,
@@ -50,6 +54,7 @@ export function CreateUser() {
         userAuth.signOut();
 
         setDialogOpen(false);
+        onCreate();
 
         toast({ title: "User created" });
       })

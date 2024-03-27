@@ -40,10 +40,26 @@ app.use(
 app.use(
   cors({
     origin: CORS_ORIGIN,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE"],
     optionsSuccessStatus: 200,
   }),
 );
+
+app.delete("/users/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId || typeof userId !== "string" || userId.length !== 28)
+    return res.status(400).json({ message: "Bad request" });
+
+  try {
+    await admin.database().ref(`users/${userId}`).remove();
+    await admin.auth().deleteUser(userId);
+
+    res.status(200).json({ message: "User deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 app.get("/analytics", async (_, res) => {
   const charges = await stripeInstance.charges.list({

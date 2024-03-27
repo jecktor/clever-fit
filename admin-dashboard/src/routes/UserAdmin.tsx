@@ -36,7 +36,7 @@ export function UserAdmin() {
         <h1 className="text-[1.875rem] font-semibold leading-none">
           User Administration
         </h1>
-        <CreateUser />
+        <CreateUser onCreate={() => setRefetch(true)} />
       </div>
       <p className="mt-2 text-muted-foreground">
         Manage your users and their subscriptions.

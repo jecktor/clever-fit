@@ -4,6 +4,7 @@ export { SidebarLink } from "./SidebarLink";
 export { HoursChart } from "./HoursChart";
 export { ModeToggle } from "./ModeToggle";
 export { CreateUser } from "./CreateUser";
+export { DeleteUser } from "./DeleteUser";
 export { StatsCards } from "./StatsCards";
 export { DataTable } from "./DataTable";
 export { EditUser } from "./EditUser";
