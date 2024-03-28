@@ -1,59 +1,13 @@
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import type { Entrance } from "@types";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 
-const data = [
-  {
-    hour: 12,
-    entrances: 240,
-  },
-  {
-    hour: 13,
-    entrances: 300,
-  },
-  {
-    hour: 14,
-    entrances: 200,
-  },
-  {
-    hour: 15,
-    entrances: 278,
-  },
-  {
-    hour: 16,
-    entrances: 189,
-  },
-  {
-    hour: 17,
-    entrances: 239,
-  },
-  {
-    hour: 18,
-    entrances: 278,
-  },
-  {
-    hour: 19,
-    entrances: 189,
-  },
-  {
-    hour: 20,
-    entrances: 278,
-  },
-  {
-    hour: 21,
-    entrances: 239,
-  },
-  {
-    hour: 22,
-    entrances: 300,
-  },
-  {
-    hour: 23,
-    entrances: 240,
-  },
-];
+interface HoursChartProps {
+  data: Entrance[];
+}
 
-export function HoursChart() {
+export function HoursChart({ data }: HoursChartProps) {
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

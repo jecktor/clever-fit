@@ -7,11 +7,10 @@ interface StatProps {
   title: string;
   value: string;
   increment?: number;
-  unit?: string;
   icon: ReactNode;
 }
 
-function Stat({ title, value, increment, unit, icon }: StatProps) {
+function Stat({ title, value, increment, icon }: StatProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -22,7 +21,7 @@ function Stat({ title, value, increment, unit, icon }: StatProps) {
         <div className="text-2xl font-bold">{value}</div>
         {increment && (
           <p className="text-xs text-muted-foreground">
-            +{increment}% from last {unit}
+            +{increment}% from last month
           </p>
         )}
       </CardContent>
@@ -35,23 +34,20 @@ export function StatsCards() {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Stat
         title="Revenue"
-        value="$45,231.89"
-        increment={20.1}
-        unit="month"
+        value="$40,600"
+        increment={23.93}
         icon={<DollarSign className="w-4 h-4 text-muted-foreground" />}
       />
       <Stat
-        title="Subscriptions"
-        value="+1,234"
-        increment={5.2}
-        unit="month"
+        title="Users"
+        value="+72"
+        increment={2.4}
         icon={<Users className="w-4 h-4 text-muted-foreground" />}
       />
       <Stat
-        title="Active Now"
-        value="+512"
+        title="Subscriptions"
+        value="+52"
         increment={5.2}
-        unit="hour"
         icon={<Activity className="w-4 h-4 text-muted-foreground" />}
       />
       <Stat

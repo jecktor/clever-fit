@@ -4,20 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 
 const data = [
   {
-    prevMonth: 400,
-    thisMonth: 240,
+    prevMonth: 8000,
+    thisMonth: 4800,
   },
   {
-    prevMonth: 200,
-    thisMonth: 980,
+    prevMonth: 4000,
+    thisMonth: 19600,
   },
   {
-    prevMonth: 189,
-    thisMonth: 480,
+    prevMonth: 13780,
+    thisMonth: 5600,
   },
   {
-    prevMonth: 349,
-    thisMonth: 430,
+    prevMonth: 6980,
+    thisMonth: 10600,
   },
 ];
 

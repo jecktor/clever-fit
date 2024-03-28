@@ -17,3 +17,8 @@ export interface Locker {
   tenant: string;
   tenantId: string;
 }
+
+export interface Entrance {
+  hour: string;
+  entrances: number;
+}
