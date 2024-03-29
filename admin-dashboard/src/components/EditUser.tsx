@@ -47,6 +47,12 @@ export function EditUser({
   }, [isSubmitSuccessful, reset]);
 
   const onSubmit: SubmitHandler<FormInput> = (data) => {
+    if (user.locker) {
+      update(ref(db, `lockers/entries/${user.locker}`), {
+        tenant: data.name,
+      });
+    }
+
     update(ref(db, `users/${user.id}`), data)
       .then(() => {
         setDialogOpen(false);
