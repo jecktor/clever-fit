@@ -211,6 +211,60 @@ app.post("/webhooks/stripe", async (req, res) => {
   res.json({ received: true });
 });
 
+// Assign locker to user
+async function assignLocker(userId: string) {
+  try {
+    const lockers = await admin.database().ref("lockers/entries").once("value");
+
+    const availableLocker = Object.entries(lockers.val()).find(
+      // @ts-ignore
+      ([_, { tenant }]) => !tenant,
+    );
+
+    if (!availableLocker) return;
+
+    const [lockerId, _] = availableLocker;
+
+    const userRef = admin.database().ref(`users/${userId}`);
+    const lockerRef = admin.database().ref(`lockers/entries/${lockerId}`);
+    const userName = (await userRef.once("value")).val().name;
+
+    await userRef.update({
+      locker: lockerId,
+    });
+
+    await lockerRef.update({
+      tenant: userName,
+      tenantId: userId,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Release locker from user
+async function releaseLocker(userId: string) {
+  try {
+    const userRef = admin.database().ref(`users/${userId}`);
+    const lockerId = (await userRef.once("value")).val().locker;
+
+    if (!lockerId) return;
+
+    const lockerRef = admin.database().ref(`lockers/entries/${lockerId}`);
+
+    await userRef.update({
+      locker: null,
+    });
+
+    await lockerRef.update({
+      tenant: null,
+      tenantId: null,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // Handle checkout session completion and update the user subscription in the database. (Only for first time subscription)
 async function handleCheckoutComplete(
   session: stripe.Checkout.Session,
@@ -227,6 +281,8 @@ async function handleCheckoutComplete(
     const plan: Plan = Object.values(plans).find(
       (p: Plan) => p.price === priceId,
     );
+
+    if (plan.name === "Pro") assignLocker(userId);
 
     await admin
       .database()
@@ -301,6 +357,9 @@ function handleSubscriptionUpdate(
     (p: Plan) => p.price === newPriceId,
   );
 
+  if (newPlan.name === "Pro") assignLocker(userRef.key as string);
+  else releaseLocker(userRef.key as string);
+
   userRef.update({
     access: true,
     subscription: {
@@ -350,6 +409,8 @@ async function handleSubscriptionDelete(subscription: stripe.Subscription) {
 
   const userId = Object.keys(user.val())[0];
   const userRef = admin.database().ref(`users/${userId}`);
+
+  releaseLocker(userId);
 
   userRef.update({
     access: false,
