@@ -1,12 +1,21 @@
 import { useState, useEffect } from "react";
 import { get, ref } from "firebase/database";
 import { db } from "@lib/firebase";
-import type { Entrance } from "@types";
+import { getAnalytics } from "@lib/api";
+import type { Entrance, Analytics } from "@types";
 
-import { Layout, RevenueChart, StatsCards, HoursChart } from "@components";
+import {
+  Layout,
+  RevenueChart,
+  StatsCards,
+  HoursChart,
+  Loading,
+} from "@components";
 
 export function Analytics() {
   const [entrances, setEntrances] = useState<Entrance[]>([]);
+  const [analytics, setAnalytics] = useState<Analytics>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const date = new Date()
@@ -32,6 +41,11 @@ export function Analytics() {
         })),
       );
     });
+
+    getAnalytics().then((data) => {
+      setAnalytics(data);
+      setLoading(false);
+    });
   }, []);
 
   return (
@@ -41,14 +55,20 @@ export function Analytics() {
         See how your business is performing.
       </p>
 
-      <div className="mt-8">
-        <StatsCards />
-      </div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="mt-8">
+            <StatsCards data={analytics!} />
+          </div>
 
-      <div className="mt-8 flex flex-col gap-8 lg:flex-row">
-        <RevenueChart />
-        <HoursChart data={entrances} />
-      </div>
+          <div className="mt-8 flex flex-col gap-8 lg:flex-row">
+            <RevenueChart data={analytics!.revenue.graph} />
+            <HoursChart data={entrances} />
+          </div>
+        </>
+      )}
     </Layout>
   );
 }

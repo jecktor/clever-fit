@@ -1,3 +1,5 @@
+import type { Analytics } from "../types";
+
 const { VITE_BASE_URL } = import.meta.env;
 
 export const deleteUser = async (id: string): Promise<{ message: string }> =>
@@ -6,3 +8,6 @@ export const deleteUser = async (id: string): Promise<{ message: string }> =>
       method: "DELETE",
     })
   ).json();
+
+export const getAnalytics = async (): Promise<Analytics> =>
+  (await fetch(`${VITE_BASE_URL}/analytics`)).json();

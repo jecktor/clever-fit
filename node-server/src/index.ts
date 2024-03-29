@@ -45,6 +45,45 @@ app.use(
   }),
 );
 
+// Analytics endpoint
+app.get("/analytics", async (_, res) => {
+  return res.status(200).json({
+    revenue: {
+      value: 40600,
+      increment: 23.93,
+      graph: [
+        {
+          prevMonth: 8000,
+          thisMonth: 4800,
+        },
+        {
+          prevMonth: 4000,
+          thisMonth: 19600,
+        },
+        {
+          prevMonth: 13780,
+          thisMonth: 5600,
+        },
+        {
+          prevMonth: 6980,
+          thisMonth: 10600,
+        },
+      ],
+    },
+    users: {
+      value: 72,
+      increment: 2.4,
+    },
+    subscriptions: {
+      value: 34,
+      increment: 1.2,
+    },
+    lockers: {
+      value: 12,
+    },
+  });
+});
+
 // Delete user endpoint
 app.delete("/users/:userId", async (req, res) => {
   const { userId } = req.params;

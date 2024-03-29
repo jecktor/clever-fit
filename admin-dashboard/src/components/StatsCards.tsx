@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { DollarSign, Users, Container, Activity } from "lucide-react";
+import type { Analytics } from "@types";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 
@@ -29,30 +30,34 @@ function Stat({ title, value, increment, icon }: StatProps) {
   );
 }
 
-export function StatsCards() {
+interface StatsCardsProps {
+  data: Analytics;
+}
+
+export function StatsCards({ data }: StatsCardsProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Stat
         title="Revenue"
-        value="$40,600"
-        increment={23.93}
+        value={`$${new Intl.NumberFormat("es-MX").format(data.revenue.value)}`}
+        increment={data.revenue.increment}
         icon={<DollarSign className="w-4 h-4 text-muted-foreground" />}
       />
       <Stat
         title="Users"
-        value="+72"
-        increment={2.4}
+        value={`+${data.users.value}`}
+        increment={data.users.increment}
         icon={<Users className="w-4 h-4 text-muted-foreground" />}
       />
       <Stat
         title="Subscriptions"
-        value="+52"
-        increment={5.2}
+        value={`+${data.subscriptions.value}`}
+        increment={data.subscriptions.increment}
         icon={<Activity className="w-4 h-4 text-muted-foreground" />}
       />
       <Stat
         title="Avaliable Lockers"
-        value="12"
+        value={data.lockers.value.toString()}
         icon={<Container className="w-4 h-4 text-muted-foreground" />}
       />
     </div>

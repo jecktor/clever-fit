@@ -22,3 +22,22 @@ export interface Entrance {
   hour: string;
   entrances: number;
 }
+
+export interface Analytics {
+  revenue: {
+    value: number;
+    increment: number;
+    graph: [{ prevMonth: number; thisMonth: number }];
+  };
+  users: {
+    value: number;
+    increment: number;
+  };
+  subscriptions: {
+    value: number;
+    increment: number;
+  };
+  lockers: {
+    value: number;
+  };
+}

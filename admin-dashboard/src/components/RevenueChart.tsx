@@ -2,26 +2,11 @@ import { Line, LineChart, ResponsiveContainer, Tooltip } from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 
-const data = [
-  {
-    prevMonth: 8000,
-    thisMonth: 4800,
-  },
-  {
-    prevMonth: 4000,
-    thisMonth: 19600,
-  },
-  {
-    prevMonth: 13780,
-    thisMonth: 5600,
-  },
-  {
-    prevMonth: 6980,
-    thisMonth: 10600,
-  },
-];
+interface RevenueChartProps {
+  data: [{ prevMonth: number; thisMonth: number }];
+}
 
-export function RevenueChart() {
+export function RevenueChart({ data }: RevenueChartProps) {
   return (
     <Card className="w-full h-fit">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
