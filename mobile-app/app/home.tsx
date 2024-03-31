@@ -121,7 +121,7 @@ export default function Page() {
                   desc="Upgrade your plan to access a locker."
                   action="Upgrade plan"
                   background={require('../assets/locker.png')}
-                  onPress={() => router.push('/plans')}
+                  onPress={() => manageSubscription(user.uid)}
                 />
               )}
             </View>
