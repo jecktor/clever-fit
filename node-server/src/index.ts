@@ -40,44 +40,65 @@ app.use(
 app.use(
   cors({
     origin: CORS_ORIGIN,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE"],
     optionsSuccessStatus: 200,
   }),
 );
 
+// Analytics endpoint
 app.get("/analytics", async (_, res) => {
-  const charges = await stripeInstance.charges.list({
-    limit: 100,
+  return res.status(200).json({
+    revenue: {
+      value: 40600,
+      increment: 23.93,
+      graph: [
+        {
+          prevMonth: 8000,
+          thisMonth: 4800,
+        },
+        {
+          prevMonth: 4000,
+          thisMonth: 19600,
+        },
+        {
+          prevMonth: 13780,
+          thisMonth: 5600,
+        },
+        {
+          prevMonth: 6980,
+          thisMonth: 10600,
+        },
+      ],
+    },
+    users: {
+      value: 72,
+      increment: 2.4,
+    },
+    subscriptions: {
+      value: 34,
+      increment: 1.2,
+    },
+    lockers: {
+      value: 12,
+    },
   });
+});
 
-  const monthCharges = charges.data.filter(
-    (charge) =>
-      charge.created >
-      Math.floor(new Date().getTime() / 1000) - 30 * 24 * 60 * 60,
-  );
+// Delete user endpoint
+app.delete("/users/:userId", async (req, res) => {
+  const { userId } = req.params;
 
-  const lastMonthCharges = charges.data.filter(
-    (charge) =>
-      charge.created >
-      Math.floor(new Date().getTime() / 1000) - 60 * 24 * 60 * 60,
-  );
+  if (!userId || typeof userId !== "string" || userId.length !== 28)
+    return res.status(400).json({ message: "Bad request" });
 
-  const monthRevenue =
-    monthCharges.reduce((acc, charge) => acc + charge.amount, 0) / 100;
+  try {
+    await admin.database().ref(`users/${userId}`).remove();
+    await admin.auth().deleteUser(userId);
 
-  const lastMonthRevenue =
-    lastMonthCharges.reduce((acc, charge) => acc + charge.amount, 0) / 100 -
-    monthRevenue;
-
-  const monthSubscriptions = monthCharges.length;
-  const lastMonthSubscriptions = lastMonthCharges.length - monthSubscriptions;
-
-  res.json({
-    monthRevenue,
-    lastMonthRevenue,
-    monthSubscriptions,
-    lastMonthSubscriptions,
-  });
+    res.status(200).json({ message: "User deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Plan subscription checkout session endpoint. (Only for first time subscription)
@@ -229,6 +250,60 @@ app.post("/webhooks/stripe", async (req, res) => {
   res.json({ received: true });
 });
 
+// Assign locker to user
+async function assignLocker(userId: string) {
+  try {
+    const lockers = await admin.database().ref("lockers/entries").once("value");
+
+    const availableLocker = Object.entries(lockers.val()).find(
+      // @ts-ignore
+      ([_, { tenant }]) => !tenant,
+    );
+
+    if (!availableLocker) return;
+
+    const [lockerId, _] = availableLocker;
+
+    const userRef = admin.database().ref(`users/${userId}`);
+    const lockerRef = admin.database().ref(`lockers/entries/${lockerId}`);
+    const userName = (await userRef.once("value")).val().name;
+
+    await userRef.update({
+      locker: lockerId,
+    });
+
+    await lockerRef.update({
+      tenant: userName,
+      tenantId: userId,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Release locker from user
+async function releaseLocker(userId: string) {
+  try {
+    const userRef = admin.database().ref(`users/${userId}`);
+    const lockerId = (await userRef.once("value")).val().locker;
+
+    if (!lockerId) return;
+
+    const lockerRef = admin.database().ref(`lockers/entries/${lockerId}`);
+
+    await userRef.update({
+      locker: null,
+    });
+
+    await lockerRef.update({
+      tenant: null,
+      tenantId: null,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 // Handle checkout session completion and update the user subscription in the database. (Only for first time subscription)
 async function handleCheckoutComplete(
   session: stripe.Checkout.Session,
@@ -245,6 +320,8 @@ async function handleCheckoutComplete(
     const plan: Plan = Object.values(plans).find(
       (p: Plan) => p.price === priceId,
     );
+
+    if (plan.name === "Pro") assignLocker(userId);
 
     await admin
       .database()
@@ -319,6 +396,9 @@ function handleSubscriptionUpdate(
     (p: Plan) => p.price === newPriceId,
   );
 
+  if (newPlan.name === "Pro") assignLocker(userRef.key as string);
+  else releaseLocker(userRef.key as string);
+
   userRef.update({
     access: true,
     subscription: {
@@ -368,6 +448,8 @@ async function handleSubscriptionDelete(subscription: stripe.Subscription) {
 
   const userId = Object.keys(user.val())[0];
   const userRef = admin.database().ref(`users/${userId}`);
+
+  releaseLocker(userId);
 
   userRef.update({
     access: false,
