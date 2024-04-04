@@ -292,6 +292,16 @@ async function assignLocker(userId: string) {
       tenant: userName,
       tenantId: userId,
     });
+
+    await admin
+      .database()
+      .ref("logs")
+      .push({
+        type: "Locker assigned",
+        by: "system",
+        message: `Assigned user ${userId} to locker ${lockerId}`,
+        timestamp: new Date().toISOString(),
+      });
   } catch (error) {
     console.error(error);
   }
@@ -315,6 +325,16 @@ async function releaseLocker(userId: string) {
       tenant: null,
       tenantId: null,
     });
+
+    await admin
+      .database()
+      .ref("logs")
+      .push({
+        type: "Locker unassigned",
+        by: "system",
+        message: `Unassigned user ${userId} from locker ${lockerId}`,
+        timestamp: new Date().toISOString(),
+      });
   } catch (error) {
     console.error(error);
   }
@@ -355,6 +375,16 @@ async function handleCheckoutComplete(
           cancelAtPeriodEnd: null,
         },
       });
+
+    await admin
+      .database()
+      .ref("logs")
+      .push({
+        type: "Subscription created",
+        by: "system",
+        message: `Created subscription for user ${userId} with plan ${plan.name}`,
+        timestamp: new Date().toISOString(),
+      });
   } catch (error) {
     console.error(error);
   }
@@ -385,7 +415,7 @@ async function handleInvoiceSucceeded(invoice: stripe.Invoice) {
     const userId = Object.keys(user.val())[0];
     const userRef = admin.database().ref(`users/${userId}`);
 
-    userRef.update({
+    await userRef.update({
       access: true,
       subscription: {
         id: subscription.id,
@@ -398,12 +428,22 @@ async function handleInvoiceSucceeded(invoice: stripe.Invoice) {
         cancelAtPeriodEnd: null,
       },
     });
+
+    await admin
+      .database()
+      .ref("logs")
+      .push({
+        type: "Subscription invoice paid",
+        by: "system",
+        message: `Paid invoice for user ${userId} with plan ${plan.name}`,
+        timestamp: new Date().toISOString(),
+      });
   } catch (error) {
     console.error(error);
   }
 }
 
-function handleSubscriptionUpdate(
+async function handleSubscriptionUpdate(
   subscription: stripe.Subscription,
   userRef: Reference,
   newPriceId: string,
@@ -415,7 +455,7 @@ function handleSubscriptionUpdate(
   if (newPlan.name === "Pro") assignLocker(userRef.key as string);
   else releaseLocker(userRef.key as string);
 
-  userRef.update({
+  await userRef.update({
     access: true,
     subscription: {
       id: subscription.id,
@@ -428,9 +468,19 @@ function handleSubscriptionUpdate(
       cancelAtPeriodEnd: null,
     },
   });
+
+  await admin
+    .database()
+    .ref("logs")
+    .push({
+      type: "Subscription updated",
+      by: "system",
+      message: `Updated subscription for user ${userRef.key} with plan ${newPlan.name}`,
+      timestamp: new Date().toISOString(),
+    });
 }
 
-function handleSubscriptionCancel(
+async function handleSubscriptionCancel(
   subscription: stripe.Subscription,
   userRef: Reference,
   priceId: string,
@@ -439,7 +489,7 @@ function handleSubscriptionCancel(
     (p: Plan) => p.price === priceId,
   );
 
-  userRef.update({
+  await userRef.update({
     access: true,
     subscription: {
       id: subscription.id,
@@ -452,6 +502,16 @@ function handleSubscriptionCancel(
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
     },
   });
+
+  await admin
+    .database()
+    .ref("logs")
+    .push({
+      type: "Subscription canceled",
+      by: "system",
+      message: `Canceled subscription for user ${userRef.key} with plan ${plan.name}`,
+      timestamp: new Date().toISOString(),
+    });
 }
 
 async function handleSubscriptionDelete(subscription: stripe.Subscription) {
@@ -467,10 +527,20 @@ async function handleSubscriptionDelete(subscription: stripe.Subscription) {
 
   releaseLocker(userId);
 
-  userRef.update({
+  await userRef.update({
     access: false,
     subscription: null,
   });
+
+  await admin
+    .database()
+    .ref("logs")
+    .push({
+      type: "Subscription deleted",
+      by: "system",
+      message: `Deleted subscription for user ${userId}`,
+      timestamp: new Date().toISOString(),
+    });
 }
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
