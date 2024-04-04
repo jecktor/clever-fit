@@ -82,6 +82,10 @@ export function DataTable({ admin, data, onChanges }: DataTableProps) {
       ),
     },
     {
+      accessorKey: "id",
+      header: "ID",
+    },
+    {
       accessorKey: "subscription.plan",
       header: "Plan",
       cell: ({ row }) => {
