@@ -1,5 +1,5 @@
 import { Stack, Link, router } from 'expo-router';
-import { onValue, ref, update } from 'firebase/database';
+import { onValue, ref, push, update } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import {
   StyleSheet,
@@ -63,11 +63,18 @@ export default function Page() {
     });
   }, [lockerId]);
 
-  function handleOpenLocker() {
+  async function handleOpenLocker() {
     if (!locker) return;
 
-    update(ref(db, `lockers/entries/${lockerId}`), {
+    await update(ref(db, `lockers/entries/${lockerId}`), {
       open: true,
+    });
+
+    await push(ref(db, 'logs'), {
+      type: 'Locker opened',
+      by: user?.email,
+      message: `Opened locker ${lockerId}`,
+      timestamp: new Date().toISOString(),
     });
   }
 
