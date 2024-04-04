@@ -41,3 +41,10 @@ export interface Analytics {
     value: number;
   };
 }
+
+export interface Log {
+  type: string;
+  user: string;
+  locker?: string;
+  timestamp: string;
+}

@@ -7,6 +7,7 @@ import {
   Users,
   LogOut,
   Container,
+  FileClock,
 } from "lucide-react";
 import { auth } from "@lib/firebase";
 import { useFirebaseUser } from "@hooks";
@@ -65,6 +66,10 @@ export function Layout({ children }: LayoutProps) {
           >
             <Container className="h-4 w-4" />
             Locker Administration
+          </SidebarLink>
+          <SidebarLink to="/logs" active={location === "/logs"}>
+            <FileClock className="h-4 w-4" />
+            Logs
           </SidebarLink>
         </nav>
       </aside>
