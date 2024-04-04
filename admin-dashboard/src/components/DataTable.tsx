@@ -42,11 +42,12 @@ import {
 } from "@components/ui/table";
 
 interface DataTableProps {
+  admin: string;
   data: User[];
   onChanges: () => void;
 }
 
-export function DataTable({ data, onChanges }: DataTableProps) {
+export function DataTable({ admin, data, onChanges }: DataTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -281,6 +282,7 @@ export function DataTable({ data, onChanges }: DataTableProps) {
       {modalUser && (
         <EditUser
           user={modalUser}
+          admin={admin}
           dialogOpen={editing}
           setDialogOpen={setEditing}
           onUpdate={onChanges}
@@ -289,6 +291,7 @@ export function DataTable({ data, onChanges }: DataTableProps) {
       {deleteUserId && (
         <DeleteUser
           id={deleteUserId}
+          admin={admin}
           dialogOpen={deleting}
           setDialogOpen={setDeleting}
           onDelete={onChanges}

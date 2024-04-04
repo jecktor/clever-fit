@@ -1,4 +1,4 @@
-import { update, ref } from "firebase/database";
+import { update, push, ref } from "firebase/database";
 import { db } from "@lib/firebase";
 import { UserPlus, UserMinus, LockOpen } from "lucide-react";
 
@@ -23,6 +23,7 @@ interface LockerProps {
   number: number;
   hasItems: boolean;
   open: boolean;
+  admin: string;
   onAssignTenant: (lockerId: string) => void;
   tenant?: string;
   tenantId?: string;
@@ -34,6 +35,7 @@ export function Locker({
   number,
   hasItems,
   open,
+  admin,
   onAssignTenant,
   tenant,
   tenantId,
@@ -41,15 +43,22 @@ export function Locker({
 }: LockerProps) {
   const { toast } = useToast();
 
-  function handleOpen() {
+  async function handleOpen() {
     if (isDemo) return;
 
-    update(ref(db, `lockers/entries/${id}`), {
+    await update(ref(db, `lockers/entries/${id}`), {
       open: true,
+    });
+
+    await push(ref(db, "logs"), {
+      type: "Locker opened",
+      by: admin,
+      message: `Opened locker ${id}`,
+      timestamp: new Date().toISOString(),
     });
   }
 
-  function handleRemoveTenant() {
+  async function handleRemoveTenant() {
     if (isDemo) return;
 
     if (hasItems) {
@@ -61,13 +70,20 @@ export function Locker({
       return;
     }
 
-    update(ref(db, `lockers/entries/${id}`), {
+    await update(ref(db, `lockers/entries/${id}`), {
       tenant: null,
       tenantId: null,
     });
 
-    update(ref(db, `users/${tenantId}`), {
+    await update(ref(db, `users/${tenantId}`), {
       locker: null,
+    });
+
+    await push(ref(db, "logs"), {
+      type: "Locker unassigned",
+      by: admin,
+      message: `Unassigned user ${tenantId} from locker ${id}`,
+      timestamp: new Date().toISOString(),
     });
 
     toast({ title: "Tenant removed" });
@@ -91,12 +107,12 @@ export function Locker({
                 {number}
               </div>
             </TooltipTrigger>
-            {tenant && <TooltipContent>{tenant}</TooltipContent>}
+            <TooltipContent>{id}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuLabel>{tenant ? tenant : "Actions"}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={handleOpen}

@@ -85,15 +85,31 @@ app.get("/analytics", async (_, res) => {
 });
 
 // Delete user endpoint
-app.delete("/users/:userId", async (req, res) => {
-  const { userId } = req.params;
+app.delete("/users/:userId/:adminEmail", async (req, res) => {
+  const { userId, adminEmail } = req.params;
 
-  if (!userId || typeof userId !== "string" || userId.length !== 28)
+  if (
+    !userId ||
+    typeof userId !== "string" ||
+    userId.length !== 28 ||
+    !adminEmail ||
+    typeof adminEmail !== "string"
+  )
     return res.status(400).json({ message: "Bad request" });
 
   try {
     await admin.database().ref(`users/${userId}`).remove();
     await admin.auth().deleteUser(userId);
+
+    await admin
+      .database()
+      .ref("logs")
+      .push({
+        type: "Delete user",
+        by: adminEmail,
+        message: `User ${userId} deleted`,
+        timestamp: new Date().toISOString(),
+      });
 
     res.status(200).json({ message: "User deleted" });
   } catch (error) {

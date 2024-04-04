@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { update, ref } from "firebase/database";
+import { update, push, ref } from "firebase/database";
 import { db } from "@lib/firebase";
 import type { User } from "@types";
 
@@ -23,6 +23,7 @@ interface FormInput {
 
 interface EditUserProps {
   user: User;
+  admin: string;
   dialogOpen: boolean;
   setDialogOpen: (open: boolean) => void;
   onUpdate: () => void;
@@ -30,6 +31,7 @@ interface EditUserProps {
 
 export function EditUser({
   user,
+  admin,
   dialogOpen,
   setDialogOpen,
   onUpdate,
@@ -54,9 +56,16 @@ export function EditUser({
     }
 
     update(ref(db, `users/${user.id}`), data)
-      .then(() => {
+      .then(async () => {
         setDialogOpen(false);
         onUpdate();
+
+        await push(ref(db, "logs"), {
+          type: "Update user",
+          by: admin,
+          message: `User ${user.id} updated`,
+          timestamp: new Date().toISOString(),
+        });
 
         toast({ title: "User updated" });
       })

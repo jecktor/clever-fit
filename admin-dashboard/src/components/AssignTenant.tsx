@@ -1,4 +1,4 @@
-import { update, ref } from "firebase/database";
+import { update, push, ref } from "firebase/database";
 import { db } from "@lib/firebase";
 import { Plus } from "lucide-react";
 import type { User } from "@types";
@@ -15,6 +15,7 @@ import {
 
 interface EditUserProps {
   lockerId: string;
+  admin: string;
   users: User[];
   dialogOpen: boolean;
   setDialogOpen: (open: boolean) => void;
@@ -22,20 +23,28 @@ interface EditUserProps {
 
 export function AssignTenant({
   lockerId,
+  admin,
   users,
   dialogOpen,
   setDialogOpen,
 }: EditUserProps) {
   const { toast } = useToast();
 
-  function handleAssignTenant(userId: string, userName: string) {
-    update(ref(db, `users/${userId}`), {
+  async function handleAssignTenant(user: User) {
+    await update(ref(db, `users/${user.id}`), {
       locker: lockerId,
     });
 
-    update(ref(db, `lockers/entries/${lockerId}`), {
-      tenant: userName,
-      tenantId: userId,
+    await update(ref(db, `lockers/entries/${lockerId}`), {
+      tenant: user.name,
+      tenantId: user.id,
+    });
+
+    await push(ref(db, "logs"), {
+      type: "Locker assigned",
+      by: admin,
+      message: `Assigned user ${user.id} to locker ${lockerId}`,
+      timestamp: new Date().toISOString(),
     });
 
     setDialogOpen(false);
@@ -65,7 +74,7 @@ export function AssignTenant({
                 </div>
               </div>
               <Button
-                onClick={() => handleAssignTenant(user.id, user.name)}
+                onClick={() => handleAssignTenant(user)}
                 variant="outline"
                 size="icon"
               >

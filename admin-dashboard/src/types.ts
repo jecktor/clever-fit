@@ -43,8 +43,9 @@ export interface Analytics {
 }
 
 export interface Log {
+  id: string;
   type: string;
-  user: string;
-  locker?: string;
+  by: string;
+  message: string;
   timestamp: string;
 }

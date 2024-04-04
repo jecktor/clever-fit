@@ -25,7 +25,14 @@ export function Logs() {
     get(logsRef).then((snapshot) => {
       if (!snapshot.exists()) return;
 
-      setLogs(snapshot.val());
+      setLogs(
+        Object.entries(snapshot.val())
+          .map(([key, value]) => ({
+            ...(value as Log),
+            id: key,
+          }))
+          .reverse(),
+      );
 
       setLoading(false);
     });
@@ -48,16 +55,18 @@ export function Logs() {
             <TableHeader>
               <TableRow>
                 <TableHead>Type</TableHead>
-                <TableHead>Timestamp</TableHead>
-                <TableHead>User</TableHead>
-                <TableHead className="text-right">Locker</TableHead>
+                <TableHead>By</TableHead>
+                <TableHead>Message</TableHead>
+                <TableHead className="text-right">Timestamp</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {logs.map(({ type, user, locker, timestamp }) => (
-                <TableRow key={timestamp}>
+              {logs.map(({ id, type, by, message, timestamp }) => (
+                <TableRow key={id}>
                   <TableCell className="font-medium">{type}</TableCell>
-                  <TableCell>
+                  <TableCell>{by}</TableCell>
+                  <TableCell>{message}</TableCell>
+                  <TableCell className="text-right">
                     {new Date(timestamp).toLocaleDateString("en-us", {
                       year: "numeric",
                       month: "2-digit",
@@ -66,14 +75,6 @@ export function Logs() {
                       minute: "2-digit",
                       second: "2-digit",
                     })}
-                  </TableCell>
-                  <TableCell>{user}</TableCell>
-                  <TableCell className="text-right">
-                    {locker ? (
-                      locker
-                    ) : (
-                      <div className="text-muted-foreground">&mdash;</div>
-                    )}
                   </TableCell>
                 </TableRow>
               ))}

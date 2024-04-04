@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { onValue, ref } from "firebase/database";
 import { db } from "@lib/firebase";
+import { useFirebaseUser } from "@hooks";
 import type { User, Locker as ILocker } from "@types";
 
 import { Layout, Locker, AssignTenant } from "@components";
 
 export function LockerAdmin() {
+  const adminUser = useFirebaseUser();
   const [users, setUsers] = useState<User[]>([]);
   const [lockers, setLockers] = useState<ILocker[]>([]);
   const [assignLockerId, setAssignLockerId] = useState<string | null>(null);
@@ -54,6 +56,7 @@ export function LockerAdmin() {
               number={locker.number}
               hasItems={locker.hasItems}
               open={locker.open}
+              admin={adminUser!.email!}
               onAssignTenant={(lockerId) => {
                 setAssignLockerId(lockerId);
                 setDialogOpen(true);
@@ -69,6 +72,7 @@ export function LockerAdmin() {
               number={i + 2}
               hasItems={i % 3 === 0}
               open={false}
+              admin=""
               onAssignTenant={() => {}}
               tenant={i % 7 === 0 ? "John Doe" : undefined}
               isDemo
@@ -79,6 +83,7 @@ export function LockerAdmin() {
       {assignLockerId && (
         <AssignTenant
           lockerId={assignLockerId}
+          admin={adminUser!.email!}
           users={users}
           dialogOpen={dialogOpen}
           setDialogOpen={setDialogOpen}

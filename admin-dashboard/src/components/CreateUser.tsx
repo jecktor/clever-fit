@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { set, ref } from "firebase/database";
+import { set, push, ref } from "firebase/database";
 import { userAuth, db } from "@lib/firebase";
 
 import { useToast } from "@components/ui/use-toast";
@@ -24,10 +24,11 @@ interface FormInput {
 }
 
 interface CreateUserProps {
+  admin: string;
   onCreate: () => void;
 }
 
-export function CreateUser({ onCreate }: CreateUserProps) {
+export function CreateUser({ admin, onCreate }: CreateUserProps) {
   const {
     register,
     reset,
@@ -51,6 +52,13 @@ export function CreateUser({ onCreate }: CreateUserProps) {
         });
 
         userAuth.signOut();
+
+        await push(ref(db, "logs"), {
+          type: "Create user",
+          by: admin,
+          message: `Created user ${credentials.user.uid}`,
+          timestamp: new Date().toISOString(),
+        });
 
         setDialogOpen(false);
         onCreate();

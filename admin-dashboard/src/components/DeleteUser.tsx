@@ -14,6 +14,7 @@ import {
 
 interface DeleteUserProps {
   id: string;
+  admin: string;
   dialogOpen: boolean;
   setDialogOpen: (open: boolean) => void;
   onDelete: () => void;
@@ -21,6 +22,7 @@ interface DeleteUserProps {
 
 export function DeleteUser({
   id,
+  admin,
   dialogOpen,
   setDialogOpen,
   onDelete,
@@ -28,7 +30,7 @@ export function DeleteUser({
   const { toast } = useToast();
 
   function handleDeleteUser(id: string) {
-    deleteUser(id).then(({ message }) => {
+    deleteUser(id, admin).then(({ message }) => {
       onDelete();
 
       toast({ title: message });

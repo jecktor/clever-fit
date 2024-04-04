@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { get, ref } from "firebase/database";
 import { db } from "@lib/firebase";
+import { useFirebaseUser } from "@hooks";
 import type { User } from "@types";
 
 import { Layout, DataTable, CreateUser, Loading } from "@components";
 
 export function UserAdmin() {
+  const adminUser = useFirebaseUser();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [refetch, setRefetch] = useState(false);
@@ -36,7 +38,12 @@ export function UserAdmin() {
         <h1 className="text-[1.875rem] font-semibold leading-none">
           User Administration
         </h1>
-        <CreateUser onCreate={() => setRefetch(true)} />
+        {adminUser && (
+          <CreateUser
+            admin={adminUser.email!}
+            onCreate={() => setRefetch(true)}
+          />
+        )}
       </div>
       <p className="mt-2 text-muted-foreground">
         Manage your users and their subscriptions.
@@ -46,7 +53,13 @@ export function UserAdmin() {
         {loading ? (
           <Loading />
         ) : (
-          <DataTable data={users} onChanges={() => setRefetch(true)} />
+          adminUser && (
+            <DataTable
+              admin={adminUser.email!}
+              data={users}
+              onChanges={() => setRefetch(true)}
+            />
+          )
         )}
       </div>
     </Layout>
