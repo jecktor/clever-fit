@@ -11,11 +11,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    
     <link rel="stylesheet" href="style.css" />
-    <script src="index.js" async></script>
     <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
-
   </head>
   <body class="bg-background text-foreground">
     <div
@@ -52,20 +49,60 @@
           <div
             class="flex flex-col p-8 gap-8 text-xl font-semibold bg-background border-b border-border md:flex-row md:bg-transparent md:border-none md:gap-6 md:text-sm md:font-normal md:p-0"
           >
-            <a href="#access" class="hover:text-secondary-foreground"
+            <a
+              href="#access"
+              class="hover:text-secondary-foreground"
+              data-i18n="menu.access"
               >Gym access</a
             >
-            <a href="#lockers" class="hover:text-secondary-foreground"
+            <a
+              href="#lockers"
+              class="hover:text-secondary-foreground"
+              data-i18n="menu.lockers"
               >Smart lockers</a
             >
-            <a href="#dashboard" class="hover:text-secondary-foreground"
+            <a
+              href="#dashboard"
+              class="hover:text-secondary-foreground"
+              data-i18n="menu.dashboard"
               >Admin dashboard</a
             >
-            <a href="#us" class="hover:text-secondary-foreground">Why us?</a>
-            <a href="#team" class="hover:text-secondary-foreground">Meet us</a>
+            <a
+              href="#us"
+              class="hover:text-secondary-foreground"
+              data-i18n="menu.us"
+              >Why us?</a
+            >
+            <a
+              href="#team"
+              class="hover:text-secondary-foreground"
+              data-i18n="menu.team"
+              >Our team</a
+            >
           </div>
         </nav>
         <div class="ml-auto flex gap-4">
+          <button id="langBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-languages"
+            >
+              <path d="m5 8 6 6" />
+              <path d="m4 14 6-6 2-3" />
+              <path d="M2 5h12" />
+              <path d="M7 2h1" />
+              <path d="m22 22-5-10-5 10" />
+              <path d="M14 18h6" />
+            </svg>
+          </button>
           <button id="themeBtn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -119,14 +156,18 @@
         class="w-full h-72 sm:h-[400px] lg:h-[600px] xl:h-full px-8 xl:px-24 grid place-items-center"
       >
         <div class="flex flex-col gap-4 text-center xl:text-left">
-          <h1 class="text-3xl font-bold sm:text-5xl lg:text-6xl">
+          <h1
+            class="text-3xl font-bold sm:text-5xl lg:text-6xl"
+            data-i18n="hero.title"
+          >
             Welcome to the future of gym management
           </h1>
           <p
             class="leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+            data-i18n="hero.subtitle"
           >
             Revolutionize your gym experience and streamline your service with
-            out smart security solutions.
+            our smart security solutions.
           </p>
         </div>
       </div>
@@ -145,11 +186,15 @@
         class="py-24 flex flex-col justify-center items-center gap-4 bg-secondary px-8 sm:px-12 md:px-24 xl:flex-row xl:gap-24 xl:py-40"
       >
         <div class="flex flex-col gap-4 text-center xl:text-left">
-          <h2 class="text-2xl font-bold sm:text-4xl lg:text-5xl">
+          <h2
+            class="text-2xl font-bold sm:text-4xl lg:text-5xl"
+            data-i18n="access.title"
+          >
             Our Innovative Gym QR Door Lock System
           </h2>
           <p
             class="leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+            data-i18n="access.subtitle"
           >
             Experience hassle-free entry with CleverFit's Gym QR Door Lock
             System. Scan a QR code from your smartphone for a seamless check-in
@@ -186,7 +231,10 @@
         </div>
       </section>
       <section id="lockers" class="py-24 px-8 sm:px-12 md:px-24">
-        <h2 class="text-center text-2xl font-bold sm:text-4xl lg:text-5xl">
+        <h2
+          class="text-center text-2xl font-bold sm:text-4xl lg:text-5xl"
+          data-i18n="lockers.title"
+        >
           Elevate Your Gym Experience with Smart Lockers
         </h2>
         <div class="mt-8 grid justify-center gap-4 md:grid-cols-2">
@@ -210,8 +258,13 @@
                 <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
               <div class="space-y-2">
-                <h3 class="font-bold">Secure, Convenient, and Smart</h3>
-                <p class="text-sm text-muted-foreground">
+                <h3 class="font-bold" data-i18n="lockers.secure.title">
+                  Secure, Convenient, and Smart
+                </h3>
+                <p
+                  data-i18n="lockers.secure.subtitle"
+                  class="text-sm text-muted-foreground"
+                >
                   Upgrade your locker experience with CleverFit's Smart Locker
                   Service. Control your locker directly from your smartphone and
                   enjoy the convenience of secure, keyless access.
@@ -242,11 +295,16 @@
                 <path d="M8 18h.01" />
               </svg>
               <div class="space-y-2">
-                <h3 class="font-bold">Mobile App Connectivity</h3>
-                <p class="text-sm text-muted-foreground">
-                  Unlock and lock your assigned locker with ease using our
-                  mobile app. Access your belongings without keys or
-                  combinations – it's as simple as a tap on your smartphone.
+                <h3 class="font-bold" data-i18n="lockers.mobile.title">
+                  Mobile App Integration
+                </h3>
+                <p
+                  data-i18n="lockers.mobile.subtitle"
+                  class="text-sm text-muted-foreground"
+                >
+                  Our Smart Lockers are integrated with our mobile app, allowing
+                  you to manage your locker from anywhere. Reserve, open, and
+                  lock your locker with just a few taps.
                 </p>
               </div>
             </div>
@@ -276,11 +334,16 @@
                 <path d="M18 17.5V9.4" />
               </svg>
               <div class="space-y-2">
-                <h3 class="font-bold">Seamless Rental Process</h3>
-                <p class="text-sm text-muted-foreground">
-                  Our user-friendly mobile app lets you browse available
-                  lockers, check rental rates, and initiate the rental process
-                  with just a few taps.
+                <h3 class="font-bold" data-i18n="lockers.assign.title">
+                  Seamless Locker Assignment
+                </h3>
+                <p
+                  data-i18n="lockers.assign.subtitle"
+                  class="text-sm text-muted-foreground"
+                >
+                  Our system automatically assigns you a locker upon check-in.
+                  No more searching for an available locker or worrying about
+                  your belongings.
                 </p>
               </div>
             </div>
@@ -311,8 +374,13 @@
                 <path d="m13.41 10.59 5.66-5.66" />
               </svg>
               <div class="space-y-2">
-                <h3 class="font-bold">Smart Monitoring for items</h3>
-                <p class="text-sm text-muted-foreground">
+                <h3 class="font-bold" data-i18n="lockers.smart.title">
+                  Smart Monitoring for items
+                </h3>
+                <p
+                  data-i18n="lockers.smart.subtitle"
+                  class="text-sm text-muted-foreground"
+                >
                   Our Smart Locker Service now includes Intelligent Item
                   Detection, ensuring an extra layer of security for your
                   valuables.
@@ -327,11 +395,15 @@
         class="py-24 flex flex-col justify-center items-center gap-4 bg-secondary px-8 sm:px-12 md:px-24 xl:flex-row xl:gap-24"
       >
         <div class="flex flex-col gap-4 text-center xl:text-left">
-          <h2 class="text-2xl font-bold sm:text-4xl lg:text-5xl">
+          <h2
+            class="text-2xl font-bold sm:text-4xl lg:text-5xl"
+            data-i18n="dashboard.title"
+          >
             Admin Dashboard for Gym Personnel
           </h2>
           <p
             class="leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+            data-i18n="dashboard.subtitle"
           >
             CleverFit doesn't just enhance the member experience – it simplifies
             gym operations too.
@@ -361,8 +433,13 @@
                   <path d="M20 17H4" />
                 </svg>
                 <div class="space-y-2 text-center">
-                  <h3 class="font-bold">Streamline Operations</h3>
-                  <p class="text-sm text-muted-foreground">
+                  <h3 class="font-bold" data-i18n="dashboard.operations.title">
+                    Streamline Operations
+                  </h3>
+                  <p
+                    data-i18n="dashboard.operations.subtitle"
+                    class="text-sm text-muted-foreground"
+                  >
                     The intelligent admin dashboard empowers gym personnel to
                     manage monthly payments, check locker statuses, and keep a
                     detailed record of member entrances.
@@ -395,8 +472,13 @@
                   <path d="M18 17.5V9.4" />
                 </svg>
                 <div class="space-y-2 text-center">
-                  <h3 class="font-bold">Locker Management</h3>
-                  <p class="text-sm text-muted-foreground">
+                  <h3 data-i18n="dashboard.management.title" class="font-bold">
+                    Locker Management
+                  </h3>
+                  <p
+                    class="text-sm text-muted-foreground"
+                    data-i18n="dashboard.management.subtitle"
+                  >
                     Keep track of user activities and enhance security with a
                     comprehensive record of member entrances. The admin
                     dashboard allows for efficient monitoring and ensures a
@@ -428,8 +510,13 @@
                   <path d="M12 18V6" />
                 </svg>
                 <div class="space-y-2 text-center">
-                  <h3 class="font-bold">Payment Management</h3>
-                  <p class="text-sm text-muted-foreground">
+                  <h3 data-i18n="dashboard.payment.title" class="font-bold">
+                    Payment Management
+                  </h3>
+                  <p
+                    data-i18n="dashboard.payment.subtitle"
+                    class="text-sm text-muted-foreground"
+                  >
                     Simplify monthly payments with the integrated admin
                     dashboard. Monitor and manage member subscriptions
                     effortlessly, making financial operations more transparent
@@ -442,7 +529,10 @@
         </div>
       </section>
       <section id="us" class="py-24 px-8 sm:px-12 md:px-24">
-        <h2 class="text-center text-2xl font-bold sm:text-4xl lg:text-5xl">
+        <h2
+          class="text-center text-2xl font-bold sm:text-4xl lg:text-5xl"
+          data-i18n="us.title"
+        >
           Why CleverFit?
         </h2>
         <div class="mt-8 flex flex-col items-center justify-around lg:flex-row">
@@ -466,12 +556,16 @@
                 <path d="m9 12 2 2 4-4" />
               </svg>
               <div class="space-y-2 text-center">
-                <h3 class="font-bold">Future-Proof Your Gym</h3>
-                <p class="text-sm text-muted-foreground">
+                <h3 data-i18n="us.security.title" class="font-bold">
+                  Future-Proof Your Gym
+                </h3>
+                <p
+                  data-i18n="us.security.subtitle"
+                  class="text-sm text-muted-foreground"
+                >
                   CleverFit's commitment to innovation means we are constantly
-                  enhancing your gym experience. With features like Locker
-                  Renting and Intelligent Item Detection, we're paving the way
-                  for the future of fitness security.
+                  enhancing your gym experience. We're paving the way for the
+                  future of fitness security.
                 </p>
               </div>
             </div>
@@ -498,8 +592,13 @@
                 <path d="m9 12 2 2 4-4" />
               </svg>
               <div class="space-y-2 text-center">
-                <h3 class="font-bold">Enhance Member Satisfaction</h3>
-                <p class="text-sm text-muted-foreground">
+                <h3 data-i18n="us.satisfaction.title" class="font-bold">
+                  Enhance Member Satisfaction
+                </h3>
+                <p
+                  data-i18n="us.satisfaction.subtitle"
+                  class="text-sm text-muted-foreground"
+                >
                   Invest in member satisfaction and peace of mind with
                   CleverFit's intelligent locker solutions. We prioritize not
                   only your security but also the convenience and flexibility
@@ -530,118 +629,192 @@
                 <path d="M20 17H4" />
               </svg>
               <div class="space-y-2 text-center">
-                <h3 class="font-bold">Streamline Workflows</h3>
-                <p class="text-sm text-muted-foreground">
-                  Empower your gym personnel with the intelligent admin
-                  dashboard and offer enhanced features like Locker Renting and
-                  Intelligent Item Detection, making workflows smoother for both
-                  staff and members.
+                <h3 data-i18n="us.workflows.title" class="font-bold">
+                  Streamline Workflows
+                </h3>
+                <p
+                  data-i18n="us.workflows.subtitle"
+                  class="text-sm text-muted-foreground"
+                >
+                  Our smart security solutions simplify gym operations, allowing
+                  gym personnel to focus on what truly matters: providing a
+                  seamless and enjoyable experience for members.
                 </p>
               </div>
             </div>
           </div>
         </div>
       </section>
-      <section  id="team" class="bg-seconday" id="us" class="py-24 px-8 sm:px-12 md:px-24">
-        <h2 class="text-center text-2xl font-bold sm:text-4xl lg:text-5xl py-2">
-          Meet our team
+      <section
+        id="team"
+        class="bg-seconday"
+        id="us"
+        class="py-24 px-8 sm:px-12 md:px-24"
+      >
+        <h2
+          data-i18n="team.title"
+          class="text-center text-2xl font-bold sm:text-4xl lg:text-5xl py-2"
+        >
+          Meet Our Team
         </h2>
-      
+
         <div class="flex flex-wrap justify-center">
           <!-- Card 1 -->
           <div class="px-12 py-4 bg-background">
             <div class="w-60 p-2 bg-secondary rounded-xl">
               <!-- Imagen -->
-              <img class="h-40 w-40 object-cover rounded-xl mx-auto" src="images/jk.jpg" alt="">
+              <img
+                class="h-40 w-40 object-cover rounded-xl mx-auto"
+                src="images/jk.jpg"
+                alt=""
+              />
               <div class="p-2">
                 <!-- Título -->
-                <h2 class="font-bold text-lg text-black-600 ">Héctor Loyo</h2>
+                <h2 class="font-bold text-lg text-black-600">Héctor Loyo</h2>
                 <!-- Descripción -->
                 <p class="text-sm text-gray-600">Hardware developer</p>
               </div>
               <!-- Enlaces sociales -->
               <div class="m-3 flex items-center justify-center">
-                <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
                   <ion-icon name="logo-linkedin" class="size-4"></ion-icon>
                 </a>
-                <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
                   <ion-icon name="logo-github" class="size-4"></ion-icon>
                 </a>
-                <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4  font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
                   <ion-icon name="logo-instagram" class="size-4"></ion-icon>
                 </a>
               </div>
             </div>
           </div>
-      
+
           <!-- Card 2 -->
           <div class="px-10 py-4">
             <div class="w-60 p-2 bg-secondary rounded-xl">
-              <img class="h-40 object-cover rounded-xl mx-auto" src="images/WhatsApp Image 2024-02-02 at 9.55.41 AM.jpeg" alt="">
+              <img
+                class="h-40 object-cover rounded-xl mx-auto"
+                src="images/WhatsApp Image 2024-02-02 at 9.55.41 AM.jpeg"
+                alt=""
+              />
               <div class="p-2">
                 <h2 class="font-bold text-lg">Eduardo Núñez</h2>
                 <p class="text-sm text-gray-600">Mobile developer</p>
               </div>
               <div class="m-3 flex items-center justify-center">
-                <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
                   <ion-icon name="logo-linkedin" class="size-4"></ion-icon>
                 </a>
-                <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
                   <ion-icon name="logo-github" class="size-4"></ion-icon>
                 </a>
-                <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4  font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
                   <ion-icon name="logo-instagram" class="size-4"></ion-icon>
                 </a>
               </div>
             </div>
           </div>
-         <!-- Card 3 -->
-         <div class="px-10 py-4">
-          <div class="w-60 p-2 bg-secondary rounded-xl">
-            <img class="h-40 object-cover rounded-xl size-40 mx-auto" src="images/WhatsApp Image 2024-02-06 at 10.05.57 AM.jpeg" alt="">
-            <div class="p-2">
-              <h2 class="font-bold text-lg">René Ramos</h2>
-              <p class="text-sm text-gray-600">Designer</p>
-            </div>
-            <div class="m-3 flex items-center justify-center">
-              <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                <ion-icon name="logo-linkedin" class="size-4"></ion-icon>
-              </a>
-              <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                <ion-icon name="logo-github" class="size-4"></ion-icon>
-              </a>
-              <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4  font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                <ion-icon name="logo-instagram" class="size-4"></ion-icon>
-              </a>
-            </div>
-          </div>
-        </div>
-        <!-- Card 4 -->
-        <div class="px-10 py-4">
-          <div class="w-60 p-2 bg-secondary rounded-xl">
-            <img class="h-40 object-cover rounded-xl size-40 mx-auto" src="images/WhatsApp Image 2024-02-06 at 11.19.12 AM.jpeg" alt="">
-            <div class="p-2">
-              <h2 class="font-bold text-lg">Brissa Jaramillo</h2>
-              <p class="text-sm text-gray-600">Web developer</p>
-            </div>
-            <div class="m-3 flex items-center justify-center">
-              <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                <ion-icon name="logo-linkedin" class="size-4"></ion-icon>
-              </a>
-              <a role="button" href="#" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                <ion-icon name="logo-github" class="size-4"></ion-icon>
-              </a>
-              <a role="button" href="https://www.instagram.com/brissademar/" class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4  font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
-                <ion-icon name="logo-instagram" class="size-4"></ion-icon>
-              </a>
+          <!-- Card 3 -->
+          <div class="px-10 py-4">
+            <div class="w-60 p-2 bg-secondary rounded-xl">
+              <img
+                class="h-40 object-cover rounded-xl size-40 mx-auto"
+                src="images/WhatsApp Image 2024-02-06 at 10.05.57 AM.jpeg"
+                alt=""
+              />
+              <div class="p-2">
+                <h2 class="font-bold text-lg">René Ramos</h2>
+                <p class="text-sm text-gray-600">Designer</p>
+              </div>
+              <div class="m-3 flex items-center justify-center">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
+                  <ion-icon name="logo-linkedin" class="size-4"></ion-icon>
+                </a>
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
+                  <ion-icon name="logo-github" class="size-4"></ion-icon>
+                </a>
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
+                  <ion-icon name="logo-instagram" class="size-4"></ion-icon>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      
+          <!-- Card 4 -->
+          <div class="px-10 py-4">
+            <div class="w-60 p-2 bg-secondary rounded-xl">
+              <img
+                class="h-40 object-cover rounded-xl size-40 mx-auto"
+                src="images/WhatsApp Image 2024-02-06 at 11.19.12 AM.jpeg"
+                alt=""
+              />
+              <div class="p-2">
+                <h2 class="font-bold text-lg">Brissa Jaramillo</h2>
+                <p class="text-sm text-gray-600">Web developer</p>
+              </div>
+              <div class="m-3 flex items-center justify-center">
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
+                  <ion-icon name="logo-linkedin" class="size-4"></ion-icon>
+                </a>
+                <a
+                  role="button"
+                  href="#"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
+                  <ion-icon name="logo-github" class="size-4"></ion-icon>
+                </a>
+                <a
+                  role="button"
+                  href="https://www.instagram.com/brissademar/"
+                  class="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+                >
+                  <ion-icon name="logo-instagram" class="size-4"></ion-icon>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-      
-    </main> 
+    </main>
     <footer
       class="w-full h-14 border-t border-border bg-background flex items-center gap-6 px-8 xl:px-24"
     >
@@ -649,5 +822,7 @@
         ©<span id="date"></span> CleverFit
       </p>
     </footer>
+
+    <script src="/index.js" type="module"></script>
   </body>
 </html>
