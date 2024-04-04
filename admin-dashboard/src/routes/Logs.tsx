@@ -25,12 +25,7 @@ export function Logs() {
     get(logsRef).then((snapshot) => {
       if (!snapshot.exists()) return;
 
-      setLogs(
-        Object.entries(snapshot.val()).map(([key, value]) => ({
-          ...(value as Log),
-          id: key,
-        })),
-      );
+      setLogs(snapshot.val());
 
       setLoading(false);
     });
