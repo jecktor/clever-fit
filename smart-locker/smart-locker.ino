@@ -224,7 +224,7 @@ void loop() {
     itemsMillis = millis();
 
     unsigned int distance = sonar.ping();
-    bool hasItems = distance < 1945 || distance > 1950;
+    bool hasItems = distance > 1920;
 
     if (hasItems != prevItemsCheck) {
       prevItemsCheck = hasItems;
