@@ -50,7 +50,7 @@ unsigned long lockMillis = 0;
 unsigned long itemsMillis = 0;
 
 const unsigned long lockInterval = 1000;
-const unsigned long itemsInterval = 10000;
+const unsigned long itemsInterval = 5000;
 
 /* Utils */
 
@@ -224,7 +224,8 @@ void loop() {
     itemsMillis = millis();
 
     unsigned int distance = sonar.ping();
-    bool hasItems = distance > 1920;
+    Serial.println(distance);
+    bool hasItems = distance < 1940 || distance > 1950;
 
     if (hasItems != prevItemsCheck) {
       prevItemsCheck = hasItems;
@@ -237,11 +238,9 @@ void loop() {
   if (millis() - lockMillis >= lockInterval) {
     lockMillis = millis();
 
-    if (unlocked) {
-      Firebase.RTDB.setInt(&fbdo, F(String(path + "/open").c_str()), false);
+    Firebase.RTDB.setInt(&fbdo, F(String(path + "/open").c_str()), false);
 
-      unlocked = false;
-    }
+    unlocked = false;
   }
 
   if (unlocked)

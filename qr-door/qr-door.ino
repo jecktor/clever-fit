@@ -139,7 +139,7 @@ void setup() {
   config.timeout.serverResponse = 10 * 1000;
 
   /* RTC */
-  rtc.adjust(15, 0, 0, 2024, 2, 3);
+  rtc.adjust(9, 9, 0, 2024, 4, 9);
 
   ledOff();
 }
