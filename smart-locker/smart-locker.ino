@@ -224,7 +224,6 @@ void loop() {
     itemsMillis = millis();
 
     unsigned int distance = sonar.ping();
-    Serial.println(distance);
     bool hasItems = distance < 1940 || distance > 1950;
 
     if (hasItems != prevItemsCheck) {
